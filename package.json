@@ -6,7 +6,8 @@
   "dependencies": {
     "commander": "^2.13.0",
     "encoding": "^0.1.12",
-    "iconv-lite": "^0.4.15"
+    "iconv-lite": "^0.4.15",
+    "ora": "^1.4.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -14,6 +15,10 @@
   },
   "author": "SixBytesUnder",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SixBytesUnder/neconv"
+  },
   "bin": {
     "neconv": "./index.js"
   }
