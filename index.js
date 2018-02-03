@@ -53,13 +53,13 @@ function recode() {
 }
 
 if (program.all === true) {
-	getFiles('.');
+    getFiles('.');
 } else if (program.file !== undefined) {
     files.push(path.resolve(process.cwd(), program.file));
-	recode();
+    recode();
 } else {
-	console.log('No input file specified!');
-	console.log('Use option "-a" to convert all TXT files in current directory.');
-	console.log('Use option "-f filename" to convert specified file only.');
+    console.log('No input file specified!');
+    console.log('Use option "-a" to convert all TXT files in current directory.');
+    console.log('Use option "-f filename" to convert specified file only.');
 }
 
