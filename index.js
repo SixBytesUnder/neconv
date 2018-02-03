@@ -5,55 +5,64 @@ const program = require('commander');
 const encoding = require("encoding");
 const iconvlite = require('iconv-lite');
 const path = require('path');
+const ora = require('ora');
 const fs = require('fs');
 var files = [];
 
 
 program
-	.version('1.1.0')
+	.version('1.2.0')
 	.option('-a, --all', 'Process all txt files in current directory')
 	.option('-f, --file <file>', 'Process only given file')
 	.parse(process.argv);
 
-function getFiles (dir, files_) {
-	files_ = files_ || [];
-	var files = fs.readdirSync(dir);
-	for (var i in files) {
-		var name = dir === '.' ? files[i] : dir + '/' + files[i];
+function getFile() {
+    var filePath = __dirname + "/image1" + index + ".png";
+    return fs.readFileAsync(filePath);
+}
+
+function getFiles(dir) {
+	var filesRaw = fs.readdirSync(dir);
+	for (var i in filesRaw) {
+		var name = dir === '.' ? filesRaw[i] : dir + '/' + filesRaw[i];
 		var ext = path.extname(name);
-		if (fs.statSync(name).isDirectory()) {
-			// commented out to get only files in current folder and not process all subfolders
-			// getFiles(name, files_);
-		} else {
+		if (!fs.statSync(name).isDirectory()) {
 			if (ext == '.txt') {
-				convertMe(name);
+                files.push(path.resolve(process.cwd(), name));
 			}
 		}
 	}
+    recode(files);
 }
 
-function convertMe(arg) {
-	var inputFile = arg;
-	console.log('Converting file: ' + inputFile);
-	var file = fs.readFileSync(inputFile); 
-	var data = new Buffer(file, "ascii");
-	var translated = encoding.convert(data, "UTF-8", "CP1250");
-	var converted = iconvlite.encode(translated, "utf8").toString();
-	
-	fs.writeFile(inputFile, converted, function(err) {
-		if (err) {
-			return console.log(err);
-		}
+let recode = function() {
+    if (files.length > 0) {
+        var fileName = files.shift();
+        const spinner = ora('File ' + path.basename(fileName) + ' processing...').start();
+        var fileSingle = fs.readFileSync(fileName);
+        var data = new Buffer(fileSingle, "ascii");
+        var translated = encoding.convert(data, "UTF-8", "CP1250");
+        var converted = iconvlite.encode(translated, "utf8").toString();
         
-		console.log("File " + inputFile + " converted!");
-	});
-	
+        fs.writeFile(fileName, converted, function(err) {
+            if (err) {
+                spinner.fail('File ' + path.basename(fileName) + ' failed.');
+                console.log(err);
+            } else {
+                spinner.succeed('File ' + path.basename(fileName) + ' DONE!');
+            }
+            recode(files);
+        });
+    } else {
+        console.log('No more files to process or all files done.');
+    }
 }
 
 if (program.all === true) {
 	getFiles('.');
 } else if (program.file != undefined) {
-	convertMe(program.file);
+    files.push(path.resolve(process.cwd(), program.file));
+	recode();
 } else {
 	console.log('No input file specified!');
 	console.log('Use option "-a" to convert all TXT files in current directory.');
