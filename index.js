@@ -10,7 +10,7 @@ const fs = require('fs');
 var files = [];
 
 program
-	.version('1.2.0')
+	.version('1.2.1')
 	.option('-a, --all', 'Process all txt files in current directory')
 	.option('-f, --file <file>', 'Process only given file')
 	.parse(process.argv);
@@ -26,7 +26,7 @@ function getFiles(dir) {
 			}
 		}
 	}
-		recode(files);
+	recode(files);
 }
 
 function recode() {
@@ -34,16 +34,16 @@ function recode() {
 		var fileName = files.shift();
 		const spinner = ora(`File ${path.basename(fileName)} processing...`).start();
 		var fileSingle = fs.readFileSync(fileName);
-		var data = new Buffer(fileSingle, "ascii");
+		var data = Buffer.from(fileSingle, "ascii");
 		var translated = encoding.convert(data, "UTF-8", "CP1250");
 		var converted = iconvlite.encode(translated, "utf8").toString();
 		
 		fs.writeFile(fileName, converted, function(err) {
 			if (err) {
-				spinner.fail(`File ${path.basename(fileName)} failed.`);
+				spinner.fail(`Failed file: ${path.basename(fileName)} .`);
 				console.log(err);
 			} else {
-				spinner.succeed(`File ${path.basename(fileName)} DONE!`);
+				spinner.succeed(`DONE: ${path.basename(fileName)}`);
 			}
 			recode(files);
 		});
@@ -62,4 +62,3 @@ if (program.all === true) {
 		console.log('Use option "-a" to convert all TXT files in current directory.');
 		console.log('Use option "-f filename" to convert specified file only.');
 }
-
