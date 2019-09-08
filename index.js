@@ -7,10 +7,11 @@ const iconvlite = require('iconv-lite');
 const path = require('path');
 const ora = require('ora');
 const fs = require('fs');
+const glob = require('glob');
 var files = [];
 
 program
-	.version('1.2.1')
+	.version('1.3.0')
 	.option('-a, --all', 'Process all txt files in current directory')
 	.option('-f, --file <file>', 'Process only given file')
 	.parse(process.argv);
@@ -39,18 +40,12 @@ function recode() {
 }
 
 if (program.all === true) {
-	const dir = '.';
-	var filesRaw = fs.readdirSync(dir);
-	for (var i in filesRaw) {
-		var name = dir === '.' ? filesRaw[i] : dir + '/' + filesRaw[i];
-		var ext = path.extname(name);
-		if (!fs.statSync(name).isDirectory()) {
-			if (ext === '.txt' || ext === '.srt') {
-				files.push(path.resolve(process.cwd(), name));
-			}
-		}
-	}
-	recode(files);
+	glob('**/*.+(txt|srt)', {
+		nocase: true
+	}, function(er, foundFiles) {
+		files = foundFiles;
+		recode();
+	});
 } else if (program.file !== undefined) {
 	files.push(path.resolve(process.cwd(), program.file));
 	recode();
