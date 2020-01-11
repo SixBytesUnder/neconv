@@ -11,22 +11,22 @@ const glob = require('glob');
 var files = [];
 
 program
-	.version('1.3.1')
+	.version('1.4.0')
 	.option('-a, --all', 'Process all txt files in current directory')
 	.option('-f, --file <file>', 'Process only given file')
 	.parse(process.argv);
 
 function recode() {
-	if (files.length > 0) {
+	var promise = new Promise((resolve) => {
 		var fileName = files.shift();
-		const spinner = ora({
-			text: `${path.basename(fileName)} - processing...`,
-			spinner: 'dots2'
-		}).start();
 		var fileSingle = fs.readFileSync(fileName);
 		var data = Buffer.from(fileSingle, 'ascii');
 		var translated = encoding.convert(data, 'UTF-8', 'CP1250');
 		var converted = iconvlite.encode(translated, 'utf8').toString();
+		const spinner = ora({
+			text: `${path.basename(fileName)} - processing...`,
+			spinner: 'dots2'
+		}).start();
 		
 		fs.writeFile(fileName, converted, function(err) {
 			if (err) {
@@ -35,23 +35,31 @@ function recode() {
 			} else {
 				spinner.succeed(`${path.basename(fileName)} - DONE`);
 			}
-			recode(files);
+			resolve(files);
 		});
-	} else {
-		console.log('No more files to process or all files done.');
-	}
+	});
+
+	return promise;
 }
+
+const loop = () => {
+	return recode().then(() => {
+		if (files.length > 0) {
+			return loop();
+		}
+	});
+};
 
 if (program.all === true) {
 	glob('**/*.+(txt|srt)', {
 		nocase: true
 	}, function(er, foundFiles) {
 		files = foundFiles;
-		recode();
+		loop().then(() => console.log('No more files to process or all files done.'));
 	});
 } else if (program.file !== undefined) {
 	files.push(path.resolve(process.cwd(), program.file));
-	recode();
+	loop().then(() => console.log('No more files to process or all files done.'));
 } else {
 	console.log('No input file specified!');
 	console.log('Use option "-a" to convert all TXT files in current directory.');
