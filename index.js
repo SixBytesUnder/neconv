@@ -11,7 +11,7 @@ const glob = require('glob');
 var files = [];
 
 program
-	.version('1.3.0')
+	.version('1.3.1')
 	.option('-a, --all', 'Process all txt files in current directory')
 	.option('-f, --file <file>', 'Process only given file')
 	.parse(process.argv);
@@ -19,7 +19,10 @@ program
 function recode() {
 	if (files.length > 0) {
 		var fileName = files.shift();
-		const spinner = ora(`File ${path.basename(fileName)} processing...`).start();
+		const spinner = ora({
+			text: `${path.basename(fileName)} - processing...`,
+			spinner: 'dots2'
+		}).start();
 		var fileSingle = fs.readFileSync(fileName);
 		var data = Buffer.from(fileSingle, 'ascii');
 		var translated = encoding.convert(data, 'UTF-8', 'CP1250');
@@ -27,10 +30,10 @@ function recode() {
 		
 		fs.writeFile(fileName, converted, function(err) {
 			if (err) {
-				spinner.fail(`Failed file: ${path.basename(fileName)}`);
+				spinner.fail(`${path.basename(fileName)} - failed`);
 				console.log(err);
 			} else {
-				spinner.succeed(`DONE: ${path.basename(fileName)}`);
+				spinner.succeed(`${path.basename(fileName)} - DONE`);
 			}
 			recode(files);
 		});
