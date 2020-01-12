@@ -42,14 +42,14 @@ git push
 
 # TODO
 - [x] single line progress animation  
-	https://stackoverflow.com/questions/34848505/how-to-make-a-loading-animation-in-console-application-written-in-javascript-or  
-	https://github.com/visionmedia/node-progress  
-	https://github.com/nathanpeck/clui  
-	https://github.com/helloIAmPau/node-spinner  
-	https://github.com/sindresorhus/ora  
-	https://github.com/SamVerschueren/listr  
+	- https://stackoverflow.com/questions/34848505/how-to-make-a-loading-animation-in-console-application-written-in-javascript-or
+	- https://github.com/visionmedia/node-progress
+	- https://github.com/nathanpeck/clui
+	- https://github.com/helloIAmPau/node-spinner
+	- https://github.com/sindresorhus/ora
+	- https://github.com/SamVerschueren/listr
 - [ ] if run with no parameters, list files in current dir and allow to choose one
-https://github.com/SBoudrias/Inquirer.js
+	- https://github.com/SBoudrias/Inquirer.js
 - ~~color output~~ https://github.com/chalk/chalk
 
 # Interesting resources
