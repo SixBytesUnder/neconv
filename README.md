@@ -48,9 +48,9 @@ git push
 	https://github.com/helloIAmPau/node-spinner  
 	https://github.com/sindresorhus/ora  
 	https://github.com/SamVerschueren/listr  
-- ~~color output~~ https://github.com/chalk/chalk
-- [ ] if runwith no parameters, list files in current dir and allow to choose one
+- [ ] if run with no parameters, list files in current dir and allow to choose one
 https://github.com/SBoudrias/Inquirer.js
+- ~~color output~~ https://github.com/chalk/chalk
 
 # Interesting resources
 ## How to read multiple files in Node.js asynchronously and process all file contents synchronously
