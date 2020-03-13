@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict';
 
 const inquirer = require('inquirer');
 const encoding = require('encoding');
@@ -8,21 +7,22 @@ const path = require('path');
 const ora = require('ora');
 const fs = require('fs');
 const glob = require('glob');
-var files = [];
+
+let files = [];
 
 function recode() {
-	var promise = new Promise((resolve) => {
-		var fileName = files.shift();
-		var fileSingle = fs.readFileSync(fileName);
-		var data = Buffer.from(fileSingle, 'ascii');
-		var translated = encoding.convert(data, 'UTF-8', 'CP1250');
-		var converted = iconvlite.encode(translated, 'utf8').toString();
+	return new Promise((resolve) => {
+		const fileName = files.shift();
+		const fileSingle = fs.readFileSync(fileName);
+		const data = Buffer.from(fileSingle, 'ascii');
+		const translated = encoding.convert(data, 'UTF-8', 'CP1250');
+		const converted = iconvlite.encode(translated, 'utf8').toString();
 		const spinner = ora({
 			text: `${path.basename(fileName)} - processing...`,
 			spinner: 'dots2'
 		}).start();
-		
-		fs.writeFile(fileName, converted, function(err) {
+
+		fs.writeFile(fileName, converted, (err) => {
 			if (err) {
 				spinner.fail(`${path.basename(fileName)} - failed`);
 				console.log(err);
@@ -32,8 +32,6 @@ function recode() {
 			resolve(files);
 		});
 	});
-
-	return promise;
 }
 
 const loop = () => {
@@ -44,9 +42,10 @@ const loop = () => {
 	});
 };
 
+// Get all files from current directory
 glob('*.+(txt|srt)', {
 	nocase: true
-}, function(er, foundFiles) {
+}, (err, foundFiles) => {
 	files = foundFiles;
 });
 
@@ -63,9 +62,11 @@ inquirer
 			value: 2
 		}]
 	}])
-	.then(answers => {
+	.then((answers) => {
 		if (answers.range === 1) {
-			loop().then(() => console.log('No more files to process or all files done.'));
+			loop().then(() => {
+				console.log('No more files to process or all files done.');
+			});
 		} else {
 			inquirer
 				.prompt({
@@ -74,11 +75,13 @@ inquirer
 					message: 'Select files to convert',
 					choices: files
 				})
-				.then(answers => {
-					files = answers.files;
-					loop().then(() => console.log('No more files to process or all files done.'));
+				.then((subAnswers) => {
+					files = subAnswers.files;
+					loop().then(() => {
+						console.log('No more files to process or all files done.');
+					});
 				})
-				.catch(error => {
+				.catch((error) => {
 					if (error.isTtyError) {
 						console.log('Prompt couldn\'t be rendered in the current environment');
 					} else {
@@ -87,7 +90,7 @@ inquirer
 				});
 		}
 	})
-	.catch(error => {
+	.catch((error) => {
 		if (error.isTtyError) {
 			console.log('Prompt couldn\'t be rendered in the current environment');
 		} else {
