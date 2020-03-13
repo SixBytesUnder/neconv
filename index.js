@@ -11,36 +11,31 @@ const glob = require('glob');
 let files = [];
 
 function recode() {
-	return new Promise((resolve) => {
-		const fileName = files.shift();
-		const fileSingle = fs.readFileSync(fileName);
-		const data = Buffer.from(fileSingle, 'ascii');
-		const translated = encoding.convert(data, 'UTF-8', 'CP1250');
-		const converted = iconvlite.encode(translated, 'utf8').toString();
-		const spinner = ora({
-			text: `${path.basename(fileName)} - processing...`,
-			spinner: 'dots2'
-		}).start();
+	files.reduce((accumulaccumulatorPromise, nextFile) => {
+		return accumulaccumulatorPromise.then(() => {
+			return new Promise((resolve) => {
+				const fileSingle = fs.readFileSync(nextFile);
+				const data = Buffer.from(fileSingle, 'ascii');
+				const translated = encoding.convert(data, 'UTF-8', 'CP1250');
+				const converted = iconvlite.encode(translated, 'utf8').toString();
+				const spinner = ora({
+					text: `${path.basename(nextFile)} - processing...`,
+					spinner: 'dots2'
+				}).start();
 
-		fs.writeFile(fileName, converted, (err) => {
-			if (err) {
-				spinner.fail(`${path.basename(fileName)} - failed`);
-				console.log(err);
-			} else {
-				spinner.succeed(`${path.basename(fileName)} - DONE`);
-			}
-			resolve(files);
+				fs.writeFile(nextFile, converted, (err) => {
+					if (err) {
+						spinner.fail(`${path.basename(nextFile)} - failed`);
+						console.log(err);
+					} else {
+						spinner.succeed(`${path.basename(nextFile)} - DONE`);
+					}
+					resolve(nextFile);
+				});
+			});
 		});
-	});
+	}, Promise.resolve());
 }
-
-const loop = () => {
-	return recode().then(() => {
-		if (files.length > 0) {
-			return loop();
-		}
-	});
-};
 
 // Get all files from current directory
 glob('*.+(txt|srt)', {
@@ -64,9 +59,7 @@ inquirer
 	}])
 	.then((answers) => {
 		if (answers.range === 1) {
-			loop().then(() => {
-				console.log('No more files to process or all files done.');
-			});
+			recode();
 		} else {
 			inquirer
 				.prompt({
@@ -77,23 +70,22 @@ inquirer
 				})
 				.then((subAnswers) => {
 					files = subAnswers.files;
-					loop().then(() => {
-						console.log('No more files to process or all files done.');
-					});
+					recode();
 				})
 				.catch((error) => {
 					if (error.isTtyError) {
-						console.log('Prompt couldn\'t be rendered in the current environment');
+						console.log('Prompt couldn\'t be rendered in the current environment (2)');
 					} else {
-						console.log('Something went wrong, please try again');
+						console.log('Something went wrong, please try again (2)');
 					}
 				});
 		}
 	})
 	.catch((error) => {
 		if (error.isTtyError) {
-			console.log('Prompt couldn\'t be rendered in the current environment');
+			console.log('Prompt couldn\'t be rendered in the current environment (1)');
 		} else {
-			console.log('Something went wrong, please try again');
+			console.log(error);
+			console.log('Something went wrong, please try again (1)');
 		}
 	});
