@@ -11,7 +11,7 @@
     "ora": "^4.0.3"
   },
   "scripts": {
-    "test": "standard"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "SixBytesUnder",
   "license": "ISC",
