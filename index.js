@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-const program = require('commander');
+const inquirer = require('inquirer');
 const encoding = require('encoding');
 const iconvlite = require('iconv-lite');
 const path = require('path');
@@ -9,12 +9,6 @@ const ora = require('ora');
 const fs = require('fs');
 const glob = require('glob');
 var files = [];
-
-program
-	.version('1.4.0')
-	.option('-a, --all', 'Process all txt files in current directory')
-	.option('-f, --file <file>', 'Process only given file')
-	.parse(process.argv);
 
 function recode() {
 	var promise = new Promise((resolve) => {
@@ -50,18 +44,53 @@ const loop = () => {
 	});
 };
 
-if (program.all === true) {
-	glob('**/*.+(txt|srt)', {
-		nocase: true
-	}, function(er, foundFiles) {
-		files = foundFiles;
-		loop().then(() => console.log('No more files to process or all files done.'));
+glob('*.+(txt|srt)', {
+	nocase: true
+}, function(er, foundFiles) {
+	files = foundFiles;
+});
+
+inquirer
+	.prompt([{
+		type: 'list',
+		name: 'range',
+		message: 'Select range',
+		choices: [{
+			name: 'All files in current directory',
+			value: 1
+		}, {
+			name: 'Select files manually',
+			value: 2
+		}]
+	}])
+	.then(answers => {
+		if (answers.range === 1) {
+			loop().then(() => console.log('No more files to process or all files done.'));
+		} else {
+			inquirer
+				.prompt({
+					type: 'checkbox',
+					name: 'files',
+					message: 'Select files to convert',
+					choices: files
+				})
+				.then(answers => {
+					files = answers.files;
+					loop().then(() => console.log('No more files to process or all files done.'));
+				})
+				.catch(error => {
+					if (error.isTtyError) {
+						console.log('Prompt couldn\'t be rendered in the current environment');
+					} else {
+						console.log('Something went wrong, please try again');
+					}
+				});
+		}
+	})
+	.catch(error => {
+		if (error.isTtyError) {
+			console.log('Prompt couldn\'t be rendered in the current environment');
+		} else {
+			console.log('Something went wrong, please try again');
+		}
 	});
-} else if (program.file !== undefined) {
-	files.push(path.resolve(process.cwd(), program.file));
-	loop().then(() => console.log('No more files to process or all files done.'));
-} else {
-	console.log('No input file specified!');
-	console.log('Use option "-a" to convert all TXT files in current directory.');
-	console.log('Use option "-f filename" to convert specified file only.');
-}
