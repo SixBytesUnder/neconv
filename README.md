@@ -48,10 +48,11 @@ git push
 	- https://github.com/helloIAmPau/node-spinner
 	- https://github.com/sindresorhus/ora
 	- https://github.com/SamVerschueren/listr
-- [ ] if run with no parameters, list files in current dir and allow to choose one
+- [x] if run with no parameters, list files in current dir and allow to choose one
 	- https://github.com/SBoudrias/Inquirer.js
 - ~~color output~~ https://github.com/chalk/chalk
 
 # Interesting resources
 ## How to read multiple files in Node.js asynchronously and process all file contents synchronously
 http://www.yaoyuyang.com/2017/01/20/nodejs-batch-file-processing.html
+https://css-tricks.com/why-using-reduce-to-sequentially-resolve-promises-works/
