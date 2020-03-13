@@ -12,6 +12,14 @@ npm update --save-dev package1 package2
 ```
 npm install --save package-name@latest
 ```
+## Audit packages for possible vulnerabilities
+```
+npm audit
+```
+## Fix dependency vulnerabilities
+```
+npm audit fix
+```
 
 # Git flow hotfix
 ## switch to a dev branch
