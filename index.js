@@ -8,9 +8,7 @@ const ora = require('ora');
 const fs = require('fs');
 const glob = require('glob');
 
-let files = [];
-
-function recode() {
+function recode(files) {
 	files.reduce((accumulatorPromise, nextFile) => {
 		return accumulatorPromise.then(() => {
 			return new Promise((resolve) => {
@@ -41,51 +39,22 @@ function recode() {
 glob('*.+(txt|srt)', {
 	nocase: true
 }, (err, foundFiles) => {
-	files = foundFiles;
-});
-
-inquirer
-	.prompt([{
-		type: 'list',
-		name: 'range',
-		message: 'Select range',
-		choices: [{
-			name: 'All files in current directory',
-			value: 1
-		}, {
-			name: 'Select files manually',
-			value: 2
-		}]
-	}])
-	.then((answers) => {
-		if (answers.range === 1) {
-			recode();
-		} else {
-			inquirer
-				.prompt({
-					type: 'checkbox',
-					name: 'files',
-					message: 'Select files to convert',
-					choices: files
-				})
-				.then((subAnswers) => {
-					files = subAnswers.files;
-					recode();
-				})
-				.catch((error) => {
-					if (error.isTtyError) {
-						console.log('Prompt couldn\'t be rendered in the current environment (2)');
-					} else {
-						console.log('Something went wrong, please try again (2)');
-					}
-				});
-		}
-	})
-	.catch((error) => {
-		if (error.isTtyError) {
-			console.log('Prompt couldn\'t be rendered in the current environment (1)');
-		} else {
+	inquirer
+		.prompt({
+			type: 'checkbox',
+			name: 'files',
+			message: 'Select files to convert',
+			choices: foundFiles
+		})
+		.then((subAnswers) => {
+			recode(subAnswers.files);
+		})
+		.catch((error) => {
+			if (error.isTtyError) {
+				console.log('Prompt couldn\'t be rendered in the current environment');
+			} else {
+				console.log('Something went wrong, please try again');
+			}
 			console.log(error);
-			console.log('Something went wrong, please try again (1)');
-		}
-	});
+		});
+});
