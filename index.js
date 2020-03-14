@@ -11,8 +11,8 @@ const glob = require('glob');
 let files = [];
 
 function recode() {
-	files.reduce((accumulaccumulatorPromise, nextFile) => {
-		return accumulaccumulatorPromise.then(() => {
+	files.reduce((accumulatorPromise, nextFile) => {
+		return accumulatorPromise.then(() => {
 			return new Promise((resolve) => {
 				const fileSingle = fs.readFileSync(nextFile);
 				const data = Buffer.from(fileSingle, 'ascii');
