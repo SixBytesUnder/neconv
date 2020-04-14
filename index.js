@@ -46,8 +46,8 @@ glob('*.+(txt|srt)', {
 			message: 'Select files to convert',
 			choices: foundFiles
 		})
-		.then((subAnswers) => {
-			recode(subAnswers.files);
+		.then((answers) => {
+			recode(answers.files);
 		})
 		.catch((error) => {
 			if (error.isTtyError) {
