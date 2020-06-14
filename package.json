@@ -1,15 +1,8 @@
 {
   "name": "neconv",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Convert subtitles text files from CP1250 to UTF-8.",
   "main": "index.js",
-  "dependencies": {
-    "encoding": "^0.1.12",
-    "glob": "^7.1.6",
-    "iconv-lite": "^0.5.1",
-    "inquirer": "^7.1.0",
-    "ora": "^4.0.4"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,9 +15,16 @@
   "bin": {
     "neconv": "./index.js"
   },
+  "dependencies": {
+    "encoding": "^0.1.12",
+    "glob": "^7.1.6",
+    "iconv-lite": "^0.6.0",
+    "inquirer": "^7.1.0",
+    "ora": "^4.0.4"
+  },
   "devDependencies": {
-    "eslint": "^7.0.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.21.2"
   }
 }

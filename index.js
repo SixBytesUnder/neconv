@@ -44,6 +44,7 @@ glob('*.+(txt|srt)', {
 			type: 'checkbox',
 			name: 'files',
 			message: 'Select files to convert',
+			pageSize: 30,
 			choices: foundFiles
 		})
 		.then((answers) => {
