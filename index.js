@@ -43,7 +43,10 @@ glob('*.+(txt|srt)', {
 						}
 						resolve(nextFile);
 					});
-				});
+				})
+					.catch((error) => {
+						console.error(error.message);
+					});
 			}, Promise.resolve());
 		})
 		.catch((error) => {
