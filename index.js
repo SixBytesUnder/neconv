@@ -8,33 +8,6 @@ const ora = require('ora');
 const fs = require('fs');
 const glob = require('glob');
 
-function recode(files) {
-	files.reduce((accumulatorPromise, nextFile) => {
-		return accumulatorPromise.then(() => {
-			return new Promise((resolve) => {
-				const fileSingle = fs.readFileSync(nextFile);
-				const data = Buffer.from(fileSingle, 'ascii');
-				const translated = encoding.convert(data, 'UTF-8', 'CP1250');
-				const converted = iconvlite.encode(translated, 'utf8').toString();
-				const spinner = ora({
-					text: `${path.basename(nextFile)} - processing...`,
-					spinner: 'dots2'
-				}).start();
-
-				fs.writeFile(nextFile, converted, (err) => {
-					if (err) {
-						spinner.fail(`${path.basename(nextFile)} - failed`);
-						console.log(err);
-					} else {
-						spinner.succeed(`${path.basename(nextFile)} - DONE`);
-					}
-					resolve(nextFile);
-				});
-			});
-		});
-	}, Promise.resolve());
-}
-
 // Get all files from current directory
 glob('*.+(txt|srt)', {
 	nocase: true
@@ -48,14 +21,37 @@ glob('*.+(txt|srt)', {
 			choices: foundFiles
 		})
 		.then((answers) => {
-			recode(answers.files);
+			answers.files.reduce(async (previousPromise, nextFile) => {
+				await previousPromise;
+				return new Promise((resolve, reject) => {
+					const fileSingle = fs.readFileSync(nextFile);
+					const data = Buffer.from(fileSingle, 'ascii');
+					const translated = encoding.convert(data, 'UTF-8', 'CP1250');
+					const converted = iconvlite.encode(translated, 'utf8').toString();
+					const spinner = ora({
+						text: `${path.basename(nextFile)} - processing...`,
+						spinner: 'dots2'
+					}).start();
+
+					fs.writeFile(nextFile, converted, (error) => {
+						if (error) {
+							spinner.fail(`${path.basename(nextFile)} - failed`);
+							console.error(error);
+							reject(error);
+						} else {
+							spinner.succeed(`${path.basename(nextFile)} - DONE`);
+						}
+						resolve(nextFile);
+					});
+				});
+			}, Promise.resolve());
 		})
 		.catch((error) => {
 			if (error.isTtyError) {
-				console.log('Prompt couldn\'t be rendered in the current environment');
+				console.error('Prompt couldn\'t be rendered in the current environment');
 			} else {
-				console.log('Something went wrong, please try again');
+				console.error('Something went wrong, please try again');
 			}
-			console.log(error);
+			console.error(error);
 		});
 });
