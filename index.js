@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const inquirer = require('inquirer');
-const encoding = require('encoding');
-const iconvlite = require('iconv-lite');
-const path = require('path');
-const ora = require('ora');
-const fs = require('fs');
-const glob = require('glob');
+import inquirer from 'inquirer';
+import encoding from 'encoding';
+import iconvlite from 'iconv-lite';
+import path from 'path';
+import ora from 'ora';
+import fs from 'fs';
+import glob from 'glob';
 
 // Get all files from current directory
 glob('*.+(txt|srt)', {
