@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "description": "Convert subtitles text files from CP1250 to UTF-8.",
   "type": "module",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,7 +14,7 @@
     "url": "https://github.com/SixBytesUnder/neconv"
   },
   "bin": {
-    "neconv": "./index.js"
+    "neconv": "./app.js"
   },
   "dependencies": {
     "encoding": "^0.1.13",
