@@ -6,12 +6,14 @@ import iconvlite from 'iconv-lite';
 import path from 'path';
 import ora from 'ora';
 import fs from 'fs';
-import glob from 'glob';
+import { glob } from 'glob';
 
-// Get all files from current directory
-glob('*.+(txt|srt)', {
-	nocase: true
-}, (err, foundFiles) => {
+async function run() {
+	// Get all files from current directory
+	const foundFiles = await glob('*.{txt,srt}', {
+		nocase: true
+	});
+
 	inquirer
 		.prompt({
 			type: 'checkbox',
@@ -57,4 +59,6 @@ glob('*.+(txt|srt)', {
 			}
 			console.error(error);
 		});
-});
+}
+
+run();
