@@ -9,56 +9,63 @@ import fs from 'fs';
 import { glob } from 'glob';
 
 async function run() {
-	// Get all files from current directory
-	const foundFiles = await glob('*.{txt,srt}', {
-		nocase: true
-	});
+  // Get all files from current directory
+  const foundFiles = await glob('*.{txt,srt}', {
+    nocase: true
+  });
 
-	inquirer
-		.prompt({
-			type: 'checkbox',
-			name: 'files',
-			message: 'Select files to convert',
-			pageSize: 30,
-			choices: foundFiles
-		})
-		.then((answers) => {
-			answers.files.reduce(async (previousPromise, nextFile) => {
-				await previousPromise;
-				return new Promise((resolve, reject) => {
-					const fileSingle = fs.readFileSync(nextFile);
-					const data = Buffer.from(fileSingle, 'ascii');
-					const translated = encoding.convert(data, 'UTF-8', 'CP1250');
-					const converted = iconvlite.encode(translated, 'utf8').toString();
-					const spinner = ora({
-						text: `${path.basename(nextFile)} - processing...`,
-						spinner: 'dots2'
-					}).start();
+  inquirer
+    .prompt({
+      type: 'checkbox',
+      name: 'files',
+      message: 'Select files to convert',
+      pageSize: 30,
+      choices: foundFiles
+    })
+    .then((answers) => {
+      const files = answers.files.map((file) => {
+        return new Promise((resolve, reject) => {
+          fs.readFile(file, (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              const translated = encoding.convert(data, 'ASCII', 'CP1250');
+              const converted = iconvlite.encode(translated, 'utf8').toString();
+              const spinner = ora({
+                text: `${path.basename(file)} - processing...`,
+                spinner: 'dots2'
+              }).start();
 
-					fs.writeFile(nextFile, converted, (error) => {
-						if (error) {
-							spinner.fail(`${path.basename(nextFile)} - failed`);
-							console.error(error);
-							reject(error);
-						} else {
-							spinner.succeed(`${path.basename(nextFile)} - DONE`);
-						}
-						resolve(nextFile);
-					});
-				})
-					.catch((error) => {
-						console.error(error.message);
-					});
-			}, Promise.resolve());
-		})
-		.catch((error) => {
-			if (error.isTtyError) {
-				console.error('Prompt couldn\'t be rendered in the current environment');
-			} else {
-				console.error('Something went wrong, please try again');
-			}
-			console.error(error);
-		});
+              fs.writeFile(file, converted, (errorFS) => {
+                if (errorFS) {
+                  spinner.fail(`${path.basename(file)} - failed`);
+                  console.error(errorFS);
+                } else {
+                  spinner.succeed(`${path.basename(file)} - DONE`);
+                }
+                spinner.stop();
+                resolve();
+              });
+            }
+          });
+        });
+      });
+
+      Promise.all(files).then(() => {
+        // All files processed
+        console.log('All files processed');
+      }).catch((error) => {
+        console.log(error);
+      });
+    })
+    .catch((error) => {
+      if (error.isTtyError) {
+        console.error('Prompt couldn\'t be rendered in the current environment');
+      } else {
+        console.error('Something went wrong, please try again');
+      }
+      console.error(error);
+    });
 }
 
 run();
