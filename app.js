@@ -29,7 +29,7 @@ async function run() {
             if (error) {
               reject(error);
             } else {
-              const translated = encoding.convert(data, 'ASCII', 'CP1250');
+              const translated = encoding.convert(data, 'UTF-8', 'CP1250');
               const converted = iconvlite.encode(translated, 'utf8').toString();
               const spinner = ora({
                 text: `${path.basename(file)} - processing...`,
