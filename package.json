@@ -5,7 +5,7 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "author": "SixBytesUnder",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "neconv": "./app.js"
   },
   "dependencies": {
+    "@jest/globals": "^29.7.0",
     "encoding": "^0.1.13",
     "glob": "^11.0.0",
     "iconv-lite": "^0.6.3",
@@ -24,6 +25,10 @@
     "ora": "^8.1.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@types/jest": "^29.5.14",
+    "babel-jest": "^29.7.0",
     "eslint": "^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.31.0",

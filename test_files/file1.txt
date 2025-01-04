@@ -1,0 +1,1000 @@
+    4  ll
+    5  cd macki.mataba.pl/
+    6  unlink macki.mataba.pl/
+    7  unlink macki.mataba.pl
+    8  ll
+    9  ;;
+   10  ll
+   11  systemctl restart nginx
+   12  vim /etc/nginx/nginx.conf
+   13  vim /etc/nginx/conf.d/macki.mataba.pl.conf
+   14  systemctl restart nginx
+   15  df -h
+   16  vim /etc/nginx/conf.d/rede.sixbytesunder.com.conf 
+   17  vim /etc/nginx/conf.d/macki.mataba.pl.conf
+   18  systemctl restart nginx
+   19  vim /etc/nginx/conf.d/macki.mataba.pl.conf
+   20  vim /etc/nginx/conf.d/mataba.pl.conf
+   21  cp /etc/nginx/conf.d/macki.mataba.pl.conf /etc/nginx/conf.d/mataba.pl.conf
+   22  vim /etc/nginx/conf.d/mataba.pl.conf
+   23  systemctl restart nginx
+   24  vim /etc/postfix/main.cf 
+   25  service postfix status
+   26  netstat -ltnp | grep 25
+   27  dig allurcode.com
+   28  dig allurcode.com mx
+   29  dig mail.allurcode.com a
+   30  cd ..
+   31  vim /etc/hosts
+   32  postfix -v
+   33  postconf mail_version
+   34  dovecot --version
+   35  mariadb -v
+   36  mysql -u root -p
+   37  vim /etc/postfix/main.cf 
+   38  cp /etc/postfix/main.cf /etc/postfix/main.cf.copy
+   39  vim /etc/postfix/main.cf 
+   40  vim /etc/postfix/mysql-virtual-mailbox-domains.cf
+   41  vim /etc/postfix/mysql-virtual-mailbox-maps.cf
+   42  vim /etc/postfix/mysql-virtual-alias-maps.cf
+   43  vim /etc/postfix/mysql-virtual-email2email.cf
+   44  systemctl restart postfix
+   45  vim /etc/hosts
+   46  dig sixbytesunder.com mx
+   47  dig mail.sixbytesunder.com a
+   48  postmap -q sixbytesunder.com mysql:/etc/postfix/mysql-virtual-mailbox-domains.cf
+   49  postmap -q wojtek@sixbytesunder.com mysql:/etc/postfix/mysql-virtual-mailbox-maps.cf
+   50  sudo postmap -q abuse@allurcode.com mysql:/etc/postfix/mysql-virtual-email2email.cf
+   51  sudo postmap -q postmaster@allurcode.com mysql:/etc/postfix/mysql-virtual-email2email.cf
+   52  vim /etc/postfix/mysql-virtual-email2email.cf
+   53  sudo postmap -q wojtek@sixbytesunder.com mysql:/etc/postfix/mysql-virtual-email2email.cf
+   54  postmap -q wojtek@sixbytesunder.com mysql:/etc/postfix/mysql-virtual-email2email.cf
+   55  postmap -q web@sixbytesunder.com mysql:/etc/postfix/mysql-virtual-email2email.cf
+   56  postmap -q postmaster@allurcode.com mysql:/etc/postfix/mysql-virtual-alias-maps.cf
+   57  cp /etc/postfix/master.cf /etc/postfix/master.cf.copy
+   58  vim /etc/postfix/master.cf
+   59  ls -al /etc/ | grep postfix
+   60  systemctl restart postfix
+   61  certbot -v
+   62  ll
+   63  cd /home/kosa/
+   64  ll
+   65  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+   66  cd ~
+   67  ll
+   68  mkdir .secrets
+   69  cd .secrets/
+   70  mkdir certbot
+   71  vim cloudflare.ini
+   72  cd ..
+   73  ll
+   74  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d *.sixbytesunder.com
+   75  pip
+   76  yum install python-pip
+   77  pip install certbot-dns-cloudflare
+   78  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d *.sixbytesunder.com
+   79  mv .secrets/cloudflare.ini .secrets/certbot/cloudflare.ini
+   80  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d *.sixbytesunder.com
+   81  chmod 600 /root/.secrets/certbot/cloudflare.ini 
+   82  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+   83  systemctl restart nginx
+   84  systemctl status nginx.service
+   85  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+   86  systemctl restart nginx
+   87  pm2 ls
+   88  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+   89  systemctl restart nginx
+   90  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+   91  vim /etc/letsencrypt/options-ssl-nginx.conf 
+   92  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+   93  systemctl restart nginx
+   94  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com,*.sixbytesunder.com
+   95  systemctl restart nginx
+   96  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com
+   97  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+   98  systemctl restart nginx
+   99  ls /etc/letsencrypt/live/sixbytesunder.com/README 
+  100  vim /etc/letsencrypt/live/sixbytesunder.com/README 
+  101  certbot certonly --nginx --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com -d *.sixbytesunder.com
+  102  certbot --version
+  103  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  104  systemctl restart nginx
+  105  systemctl status nginx.service
+  106  nginx -t
+  107  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  108  nginx -t
+  109  systemctl status nginx.service
+  110  systemctl restart nginx
+  111  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  112  telnet 94.23.210.178 443
+  113  telnet 94.23.210.178 4422
+  114  telnet 94.23.210.178 80
+  115  telnet 94.23.210.178 443
+  116  telnet sixbytesunder.com 443
+  117  nc -vz sixbytesunder.com 443
+  118  yum install nmap
+  119  nmap -p 443 94.23.210.178
+  120  nmap -p 443 sixbytesunder.com
+  121  systemctl restart nginx
+  122  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  123  systemctl restart nginx
+  124  crontab -e
+  125  exit
+  126  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  127  crontab -e
+  128  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  129  vim /etc/letsencrypt/options-ssl-nginx.conf
+  130  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  131  systemctl restart nginx
+  132  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  133  systemctl restart nginx
+  134  exit
+  135  tail -f /var/log/nginx/sixbytesunder.com-error.log
+  136  tail -100 /var/log/nginx/sixbytesunder.com-error.log
+  137  tail -100 /var/log/nginx/sixbytesunder.com-access.log
+  138  tail -f /var/log/nginx/sixbytesunder.com-access.log
+  139  tail -f /var/log/nginx/sixbytesunder.com-error.log
+  140  exit
+  141  tail -f /var/log/upstart/dovecot.log
+  142  tail -f /var/log/maillog
+  143  exit
+  144  who
+  145  yum update
+  146  ls -al
+  147  ls -al rdownloads/
+  148  vim /etc/postfix/main.cf
+  149  systemctl restart postfix
+  150  vim /etc/postfix/master.cf
+  151  vim /etc/dovecot/dovecot.conf
+  152  cp /etc/dovecot/conf.d/10-mail.conf /etc/dovecot/conf.d/10-mail.conf.orig
+  153  cp /etc/dovecot/conf.d/10-auth.conf /etc/dovecot/conf.d/10-auth.conf.orig
+  154  cp /etc/dovecot/conf.d/auth-sql.conf.ext /etc/dovecot/conf.d/auth-sql.conf.ext.orig
+  155  cp /etc/dovecot/conf.d/10-master.conf /etc/dovecot/conf.d/10-master.conf.orig
+  156  cp /etc/dovecot/conf.d/10-ssl.conf /etc/dovecot/conf.d/10-ssl.conf.orig
+  157  vim /etc/dovecot/conf.d/10-mail.conf
+  158  mkdir /var/mail/vhosts/sixbytesunder.com
+  159  mkdir /var/mail/vhosts
+  160  mkdir /var/mail/vhosts/sixbytesunder.com
+  161  mkdir /var/mail/vhosts/allurcode.com
+  162  mkdir /var/mail/vhosts/dziwnytenswiat.pl
+  163  mkdir /var/mail/vhosts/forkandspoon.pl
+  164  mkdir /var/mail/vhosts/mataba.pl
+  165  groupadd -g 5000 vmail
+  166  vim /etc/shadow
+  167  vim /etc/group
+  168  useradd -g vmail -u 5000 vmail -d /var/mail/
+  169  vim /etc/shadow
+  170  vim /etc/passwd
+  171  chown -R vmail:vmail /var/mail/
+  172  vim /etc/dovecot/conf.d/10-auth.conf
+  173  vim /etc/dovecot/conf.d/auth-sql.conf.ext
+  174  vim /etc/dovecot/dovecot-sql.conf.ext
+  175  vim /etc/postfix/mysql-virtual-mailbox-domains.cf
+  176  vim /etc/dovecot/dovecot-sql.conf.ext
+  177  ll /etc/dovecot/
+  178  chown -R vmail:dovecot /etc/dovecot
+  179  ll /etc/dovecot/
+  180  chmod -R o-rwx /etc/dovecot
+  181  ll /etc/dovecot/
+  182  vim /etc/dovecot/conf.d/10-master.conf
+  183  vim /etc/dovecot/conf.d/10-ssl.conf
+  184  systemctl restart dovecot
+  185  mail wojtek@sixbytesunder.com
+  186  grep -rnw '/etc/dovecot/' -e "protocols ="
+  187  yum install dovecot-lmtpd
+  188  yum install dovecot-lmtp
+  189  vim /etc/postfix/main.cf 
+  190  ll /var/spool/postfix/private
+  191  ll /var/spool/postfix/private/
+  192  ll /var/spool/postfix/private/dovecot 
+  193  ll /var/spool/postfix/private/dovecot/
+  194  vim /etc/postfix/main.cf 
+  195  systemctl restart dovecot
+  196  mail wojtek@sixbytesunder.com
+  197  cd /var/mail/vhosts/sixbytesunder.com/
+  198  ll
+  199  mutt -f .
+  200  mail web@sixbytesunder.com
+  201  mutt -f .
+  202  mutt
+  203  mc
+  204  ll
+  205  cd ..
+  206  ll
+  207  cd vmail 
+  208  dig sixbytesunder.com MX
+  209  grep -rnw '/etc/dovecot/' -e "ssl_cert"
+  210  vim /etc/dovecot/dovecot.conf
+  211  vim /etc/dovecot/conf.d/10-ssl.conf
+  212  vim /etc/dovecot/dovecot.conf
+  213  systemctl restart postfix
+  214  systemctl restart dovecot
+  215  mail wojtek@dziwnytenswiat.pl
+  216  mail monika@forkandspoon.pl
+  217  mail admin@forkandspoon.pl
+  218  dig forkandspoon.pl MX
+  219  mutt -f /var/mail/vhosts/allurcode.com/
+  220  mutt -f /var/spool/mail/vhosts/allurcode.com/
+  221  ll /var/spool/mail/
+  222  mutt -f /var/spool/mail/kosa 
+  223  mutt -f /var/spool/mail/vmail 
+  224  mutt -f /var/spool/mail/vhosts/allurcode.com/
+  225  mutt -f /var/spool/mail/fedor 
+  226  mutt -f /var/spool/mail/forkandspoon 
+  227  cd ~
+  228  mc
+  229  exit
+  230  mc
+  231  exit
+  232  who
+  233  yum update
+  234  exit
+  235  who
+  236  yum update
+  237  exit
+  238  ghost -v
+  239  npm install -g ghost-cli@latest
+  240  ghost -v
+  241  exit
+  242  ethtool -c eth0
+  243  ethtool -K eth0 rx off tx off
+  244  ethtool -c eth0
+  245  hg
+  246  dmesg | grep eth0
+  247  dmesg
+  248  dmesg --tail
+  249  watch dmesg
+  250  dmesg
+  251  ethtool -S eth0
+  252  yum update
+  253  ethtool -g eth0
+  254  tail /var/log/messages
+  255  tail -f /var/log/messages
+  256  tail -f /var/log/secure
+  257  sshd
+  258  sshd -ddd
+  259  exit
+  260  yum update
+  261  exit
+  262  yum update
+  263  exit
+  264  who
+  265  tail -f /var/log/maillog
+  266  crontab -e
+  267  certbot renew --quiet --post-hook "/usr/sbin/service nginx reload"
+  268  yum update
+  269  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com -d *.sixbytesunder.com
+  270  vim ~/.secrets/certbot/cloudflare.ini 
+  271  exit
+  272  vim /etc/postfix/main.cf
+  273  crontab -e
+  274  certbot renew
+  275  service nginx reload
+  276  crontab -e
+  277  history | grep "certbot"
+  278  crontab -e
+  279  systemctl reload nginx
+  280  systemctl status nginx
+  281  crontab -e
+  282  /usr/bin/certbot renew --quiet --post-hook "systemctl reload nginx"
+  283  exit
+  284  crontab -e
+  285  exit
+  286  yum update
+  287  exit
+  288  who
+  289  mc
+  290  yum update
+  291  exit
+  292  mc
+  293  yum update
+  294  exit
+  295  yum update
+  296  crontab -e
+  297  /usr/bin/certbot
+  298  /usr/bin/certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com -d *.sixbytesunder.com
+  299  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com -d *.sixbytesunder.com
+  300  vim ~/.secrets/certbot/cloudflare.ini
+  301  exit
+  302  vim /var/mail/vhosts/dziwnytenswiat.pl/
+  303  mail stuff@allurcode.com
+  304  grep -r "dc-11ea9794edb6.sixbytesunder.com" /etc/
+  305  grep -r "sixbytesunder.com" /etc/
+  306  grep -r "dc-11ea9794edb6.sixbytesunder.com" /
+  307  grep -r "dc-11ea9794edb6.sixbytesunder.com" /var/
+  308  mail stuff@allurcode.com
+  309  grep -r "dc-11ea9794edb6" /etc/
+  310  grep -r "11ea9794edb6" /etc/
+  311  grep -r "11ea9794edb6" /var/
+  312  dig dc-11ea9794edb6.sixbytesunder.com TXT
+  313  watch dig dc-11ea9794edb6.sixbytesunder.com TXT
+  314  watch dig sixbytesunder.com TXT
+  315  watch dig dc-11ea9794edb6.sixbytesunder.com TXT
+  316  exit
+  317  who
+  318  vim ~/.secrets/certbot/cloudflare.ini
+  319  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com -d *.sixbytesunder.com
+  320  certbot --version
+  321  vim /etc/letsencrypt/renewal
+  322  crontab -e
+  323  certbot renew
+  324  vim /etc/letsencrypt/renewal/sixbytesunder.com.conf 
+  325  vim /etc/letsencrypt/renewal/sixbytesunder.com-0001.conf 
+  326  vim /etc/hosts
+  327  sudo certbot --nginx
+  328  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  329  vim /etc/nginx/conf.d/allurcode.com.conf 
+  330  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  331  vim /etc/letsencrypt/live/README 
+  332  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com -d *.sixbytesunder.com
+  333  certbot certificates
+  334  vim /etc/postfix/main.cf
+  335  vim /etc/dovecot/dovecot.conf
+  336  vim /etc/dovecot/conf.d/10-mail.conf
+  337  vim /etc/dovecot/conf.d/10-ssl.conf
+  338  tail -f /var/log/maillog
+  339  cd /var/mail/vhosts/allurcode.com/
+  340  ll
+  341  find
+  342  cd ..
+  343  ll
+  344  mutt -f .
+  345  mysql -u root
+  346  mysql -u root -p
+  347  mail wojtek@sixbytesunder.com
+  348  vim /etc/dovecot/conf.d/10-ssl.conf
+  349  systemctl restart dovecot
+  350  tail /var/log/maillog
+  351  tail -f /var/log/maillog
+  352  ll /home/vmail/allurcode.com/
+  353  ll /home/vmail/allurcode.com/stuff/
+  354  ll /home/vmail/allurcode.com/stuff/Maildir/
+  355  cd /home/vmail/allurcode.com/stuff/Maildir/
+  356  ll
+  357  mutt -f .
+  358  cd ../../../forkandspoon.pl/monika/Maildir/
+  359  mutt -f .
+  360  vim /etc/dovecot/conf.d/10-master.conf
+  361  dig dc-11ea9794edb6.sixbytesunder.com
+  362  dig dc-11ea9794edb6.sixbytesunder.com TXT
+  363  dig sixbytesunder.com TXT
+  364  dig mg.sixbytesunder.com TXT
+  365  dig dc-11ea9794edb6.sixbytesunder.com TXT
+  366  cd ../../../allurcode.com/stuff/Maildir/
+  367  mutt -f .
+  368  cd ../../wojtek/Maildir/
+  369  mutt -f .
+  370  cd ../../sayhello/Maildir/
+  371  mutt -f .
+  372  cd ../../../dziwnytenswiat.pl/wojtek/Maildir/
+  373  mutt -f .
+  374  cd ../../../sixbytesunder.com/wojtek/Maildir/
+  375  mutt -f .
+  376  cd ../../web/Maildir/
+  377  mutt -f .
+  378  cd ../../postmaster/Maildir/
+  379  mutt -f .
+  380  cd ../../root/Maildir/
+  381  mutt -f .
+  382  cd ../../nginx/Maildir/
+  383  mutt -f .
+  384  exit
+  385  cd ../vmail/allurcode.com/
+  386  ll
+  387  cd wojtek/Maildir/
+  388  muff -f .
+  389  mutt -f .
+  390  node -v
+  391  npm -v
+  392  yum update
+  393  qt
+  394  tail -f /var/log/fail2ban.log
+  395  awk '($(NF-1) = /Ban/){print $NF}' /var/log/fail2ban.log | sort | uniq -c | sort -n
+  396  zgrep -h "Ban " /var/log/fail2ban.log* | awk '{print $NF}' | sort | uniq -c
+  397  fail2ban-client -v
+  398  fail2ban-client -V
+  399  uname
+  400  uname -a
+  401  cat /etc/named
+  402  yum search docker
+  403  yum remove docker                   docker-client                   docker-client-latest                   docker-common                   docker-latest                   docker-latest-logrotate                   docker-logrotate                   docker-engine
+  404  yum install yum-utils
+  405  yum install device-mapper-persistent-data
+  406  yum install lvm2
+  407  yum list docker-ce --showduplicates | sort -r
+  408  yum search docker
+  409  yum install docker
+  410  yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  411  yum clean all 
+  412  yum search docker
+  413  yum install docker-ce docker-ce-cli containerd.io
+  414  yum list docker-ce --showduplicates | sort -r
+  415  docker -V
+  416  docker -v
+  417  exit
+  418  yum install 7z
+  419  yum install p7zip
+  420  exit
+  421  vim /etc/nginx/conf.d/allurcode.com.conf 
+  422  nginx -t
+  423  vim /etc/nginx/conf.d/allurcode.com.conf 
+  424  nginx -t
+  425  vim /etc/nginx/conf.d/allurcode.com.conf 
+  426  nginx -t
+  427  vim /etc/nginx/conf.d/allurcode.com.conf 
+  428  vim /etc/nginx/conf.d/dziwnytenswiat.conf 
+  429  vim /root/.secrets/certbot/cloudflare.ini 
+  430  ls /etc/letsencrypt/live/sixbytesunder.com-0001/
+  431  cd /etc/letsencrypt/live/sixbytesunder.com-0001/
+  432  vim README 
+  433  vim fullchain.pem 
+  434  vim cert.pem 
+  435  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  436  vim /etc/nginx/conf.d/allurcode.com.conf 
+  437  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  438  nginx -t
+  439  vim /etc/nginx/conf.d/allurcode.com.conf 
+  440  nginx -t
+  441  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  442  vim /etc/letsencrypt/options-ssl-nginx.conf
+  443  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  444  vim /etc/nginx/conf.d/allurcode.com.conf 
+  445  nginx -t
+  446  vim /etc/nginx/conf.d/dziwnytenswiat.conf 
+  447  nginx -t
+  448  vim /etc/nginx/conf.d/firstseed.sixbytesunder.com.conf 
+  449  nginx -t
+  450  vim /etc/nginx/conf.d/forkandspoon.pl.conf 
+  451  nginx -t
+  452  vim /etc/nginx/conf.d/lunch.forkandspoon.pl.conf 
+  453  nginx -t
+  454  vim /etc/nginx/conf.d/memeclicker.sixbytesunder.com.conf 
+  455  nginx -t
+  456  exit
+  457  nginx -s reload
+  458  nginx -t
+  459  vim /etc/nginx/nginx.conf
+  460  vim /etc/nginx/conf.d/memeclicker.sixbytesunder.com.conf 
+  461  vim /etc/nginx/conf.d/lunch.forkandspoon.pl.conf 
+  462  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  463  nginx -t
+  464  nginx -s reload
+  465  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  466  vim /etc/letsencrypt/options-ssl-nginx.conf
+  467  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  468  crontab -e
+  469  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  470  mc
+  471  vim /etc/postfix/main.cf
+  472  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  473  vim /var/log/nginx/error.log
+  474  tail -f /var/log/nginx/error.log
+  475  tail -f /var/log/nginx/sixbytesunder.com-error.log
+  476  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  477  nginx -t
+  478  nginx -s reload
+  479  tail -f /var/log/nginx/sixbytesunder.com-error.log
+  480  tail -f /var/log/nginx/error.log
+  481  netstat | grep 443
+  482  netstat -plnt | grep 443
+  483  vim /etc/letsencrypt/options-ssl-nginx.conf
+  484  tail -f /var/log/nginx/error.log
+  485  tail -f /var/log/nginx/sixbytesunder.com-error.log
+  486  exit
+  487  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  488  nginx -t
+  489  nginx -s reload
+  490  systemctl restart nginx
+  491  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  492  nginx -s reload
+  493  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  494  systemctl restart nginx
+  495  tail -f /var/log/nginx/sixbytesunder.com-error.log
+  496  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  497  nginx -s reload
+  498  tail -f /var/log/nginx/sixbytesunder.com-error.log
+  499  exit
+  500  cd ../vmail/allurcode.com/stuff/Maildir/
+  501  mutt -f .
+  502  mc
+  503  exit
+  504  cd /home/vmail/allurcode.com/wojtek/Maildir/
+  505  mutt -f .
+  506  yum update
+  507  node -v
+  508  exit
+  509  vim /etc/nginx/conf.d/mataba.pl.conf 
+  510  vim /etc/nginx/conf.d/mataba.sixbytesunder.com.conf 
+  511  nginx -t
+  512  cp /etc/nginx/conf.d/mataba.pl.conf mataba.pl.conf
+  513  ll
+  514  rm /etc/nginx/conf.d/mataba.pl.conf
+  515  nginx -t
+  516  nginx -s reload
+  517  nginx reload
+  518  systemctl restart nginx
+  519  vim /etc/nginx/conf.d/mataba.sixbytesunder.com.conf 
+  520  systemctl restart nginx
+  521  exit
+  522  crontab -e
+  523  certbot renew --quiet --post-hook "systemctl reload nginx"
+  524  certbot renew
+  525  dig dc-11ea9794edb6.sixbytesunder.com
+  526  tail /var/log/maillog
+  527  tail -f /var/log/maillog
+  528  dovecot -n
+  529  dovecot -n | grep ssl
+  530  tail /var/log/maillog
+  531  service dovecot restart
+  532  systemctl restart dovecot
+  533  systemctl dovecot status
+  534  systemctl status dovecot
+  535  vim /etc/systemd/system/multi-user.target.wants/dovecot.service 
+  536  systemctl restart dovecot
+  537  systemctl daemon-reload
+  538  systemctl restart dovecot
+  539  systemctl status dovecot
+  540  vim /etc/systemd/system/multi-user.target.wants/dovecot.service 
+  541  systemctl daemon-reload
+  542  systemctl restart dovecot
+  543  systemctl status dovecot
+  544  tail /var/log/maillog
+  545  exit
+  546  who
+  547  vim /etc/ssh/sshd_config
+  548  /etc/init.d/sshd reload
+  549  systemctl reload ssh
+  550  systemctl reload sshd
+  551  systemctl status sshd
+  552  exit
+  553  who
+  554  vim /etc/shadow
+  555  exit
+  556  who
+  557  yum update
+  558  exit
+  559  cd /home/vmail/allurcode.com/wojtek/Maildir/
+  560  mutt -f .
+  561  yum update
+  562  exit
+  563  cd /home/vmail/allurcode.com/wojtek/Maildir/
+  564  mutt -f
+  565  mutt -f .
+  566  cd ../../sayhello/Maildir/
+  567  mutt -f .
+  568  exit
+  569  tar xvfj mapvivo.tar.gz2 
+  570  mc
+  571  exit
+  572  cd /home/vmail/allurcode.com/wojtek/Maildir/
+  573  mut -f .
+  574  mutt -f .
+  575  yum update
+  576  yum update systemd
+  577  yum --exclude update ImageMagick
+  578  yum --exclude update ImageMagick.x86_64
+  579  yum update
+  580  yum update --exclude=ImageMagick
+  581  yum update
+  582  yum install ImageMagick-devel
+  583  php -v
+  584  yu list php
+  585  yum list php
+  586  vim /etc/yum.conf 
+  587  yum search php.7
+  588  yum search php.
+  589  yum search php7
+  590  yum list installed php*
+  591  cd ~
+  592  ll
+  593  cd /home/kosa/
+  594  cp /etc/php.ini php.ini.bak
+  595  ll
+  596  yum remove php*
+  597  cd ..
+  598  ll
+  599  yum remove php*
+  600  yum install --enablerepo=remi-php72 php php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php-zip php-fileinfo
+  601  yum install epel-release
+  602  rpm -Uvh http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+  603  yum install --enablerepo=remi-php72 php php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php-zip php-fileinfo
+  604  php --version
+  605  yum install php72-devel
+  606  yum search php72
+  607  yum list installed php*
+  608  yum remove php*
+  609  yum search php72
+  610  yum install php72w
+  611  yum install php72w-cli php72w-common php72w-devel php72w-fpm php72w-gd php72w-mbstring php72w-mysql php72w-opcache php72w-pdo php72w-pear php72w-process php72w-xml
+  612  yum install php72w-pecl-imagick-devel php72w-pecl-imagick
+  613  php --version
+  614  systemctl restart nginx
+  615  vim /etc/nginx/conf.d/forkandspoon.pl.conf 
+  616  systemctl restart nginx
+  617  nginx -t
+  618  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  619  vim /etc/nginx/conf.d/mataba.sixbytesunder.com.conf 
+  620  nginx -t
+  621  /usr/sbin/nginx -s reload
+  622  systemctl status nginx
+  623  systemctl restart nginx
+  624  yum install plicykit
+  625  systemctl restart polkit.service
+  626  rpm -qa | grep polkit
+  627  mount | grep proc
+  628  vim /etc/php-fpm.d/www.conf
+  629  vim /etc/php-fpm.conf 
+  630  vim /etc/php-fpm.d/www.conf
+  631  systemctl start php-fpm
+  632  systemctl restart php-fpm
+  633  systemctl 
+  634  systemctl | grep php
+  635  systemctl restart php-fpm
+  636  ps -Af | grep dbus
+  637  vim /etc/pam.d/polkit-1 
+  638  vim /etc/pam.d/systemd-user 
+  639  vim /etc/pam.d/system-auth
+  640  mount proc -o remount,hidepid=2 && mount proc -o remount,hidepid=0 && systemctl restart polkit.service
+  641  ps -ef | grep polkit
+  642  cat /etc/passwd | grep polk
+  643  systemctl start polkitd.service
+  644  id polkitd
+  645  findmnt
+  646  hostnamectl status
+  647  vim /etc/fstab 
+  648  groupadd -g 23 nohidproc
+  649  usermod -a -G nohidproc polkitd
+  650  mount -o remount,rw,hidepid=2,gid=nohidproc /proc
+  651  systemctl restart polkit
+  652  echo "proc /proc proc defaults,hidepid=2,gid=nohidproc 0 0" >> /etc/fstab
+  653  mount -a
+  654  systemctl restart polkit
+  655  vim /etc/fstab 
+  656  mount -a
+  657  systemctl restart polkit
+  658  systemctl restart php-fpm
+  659  systemctl status polkit
+  660  cat /etc/polkit-1/rules.d
+  661  cat /etc/polkit-1/rules.d/50-default.rules 
+  662  systemctl status php-fpm
+  663  systemctl stop php-fpm
+  664  systemctl status php-fpm
+  665  systemctl start php-fpm
+  666  systemctl status php-fpm
+  667  ls /etc/php-fpm.d/
+  668  diff /etc/php-fpm.d/www.conf /etc/php-fpm.d/www.conf.rpmsave 
+  669  vim /etc/php-fpm.d/www.conf
+  670  systemctl restart php-fpm
+  671  vim /etc/nginx/conf.d/forkandspoon.pl.conf 
+  672  vim /etc/php-fpm.d/www.conf
+  673  vim /etc/nginx/conf.d/forkandspoon.pl.conf 
+  674  ls /run/php-fpm/
+  675  ls /var/run/php-fpm/
+  676  vim /etc/php-fpm.d/www.conf
+  677  systemctl restart php-fpm
+  678  systemctl status php-fpm
+  679  vim /etc/php-fpm.d/www.conf
+  680  systemctl restart php-fpm
+  681  vim /etc/php-fpm.d/www.conf
+  682  systemctl restart php-fpm
+  683  diff /etc/php.ini /etc/php.ini.rpmsave 
+  684  vim /etc/php.ini
+  685  systemctl restart php-fpm
+  686  exit
+  687  cd ../forkandspoon/
+  688  ll
+  689  cd /var/www/forkandspoon.pl/
+  690  ll
+  691  tail -f /var/log/php-fpm/error.log
+  692  vim /etc/nginx/conf.d/forkandspoon.pl.conf 
+  693  tail -f /var/log/nginx/forkandspoon.pl-error.log
+  694  yum install php-fpm
+  695  tail -f /var/log/nginx/forkandspoon.pl-error.log
+  696  vim /etc/selinux/config 
+  697  service status php72
+  698  service status php72w
+  699  service status php72w*
+  700  service php72w-fmp restart
+  701  tail /var/log/php-fpm/error.log
+  702  tail /var/log/nginx/forkandspoon.pl-error.log
+  703  tail -f /var/log/nginx/forkandspoon.pl-error.log
+  704  exit
+  705  yum list php72w*
+  706  yum update
+  707  yum clean all
+  708  yum clean all --verbose
+  709  vim /etc/yum.repos.d/CentOS-Base.repo 
+  710  yum update
+  711  exit
+  712  ghost version
+  713  npm install -g ghost-cli@latest
+  714  ghost version
+  715  yum update
+  716  exit
+  717  yum update
+  718  node -v
+  719  npm -v
+  720  npm install -g n
+  721  n lts
+  722  node -v
+  723  npm -v
+  724  exit
+  725  tail -f /var/log/nginx/dziwnytenswiat.pl-error.log
+  726  exit
+  727  yum update
+  728  who
+  729  exit
+  730  who
+  731  yum update
+  732  uptime 
+  733  exit
+  734  yum update
+  735  who
+  736  exit
+  737  yum update
+  738  yum clean all
+  739  df -h
+  740  du -xak
+  741  du -xak / > /home/kosa/sizes
+  742  sort -rn /home/kosa/sizes 
+  743  less /home/kosa/sizes 
+  744  sort -rn /home/kosa/sizes | less
+  745  lsattr config.production.json 
+  746  lsattr current/
+  747  vim /etc/fstab 
+  748  lsof | grep /var
+  749  df -hT
+  750  df -h
+  751  mc
+  752  lsof | grep /var/www/rede.sixbytesunder.com/
+  753  lsof | grep /var/www/rede.sixbytesunder.com
+  754  lsof | grep /var/www/
+  755  du -sh rede.sixbytesunder.com/
+  756  du -sh allurcode.com/
+  757  du -sh .
+  758  du -sh dziwnytenswiat.pl/
+  759  du -sh dziwnytenswiat.pl/content/
+  760  du -sh dziwnytenswiat.pl/current/
+  761  du -sh dziwnytenswiat.pl/versions/
+  762  mc
+  763  du -sh dziwnytenswiat.pl/versions/
+  764  du -sh dziwnytenswiat.pl/
+  765  du -sh allurcode.com/
+  766  df -h
+  767  du -sh /var/log/
+  768  du -sh /var/
+  769  cd allurcode.com/
+  770  ghost update
+  771  exit
+  772  cd /home/redekonst/
+  773  ll
+  774  mkdir files
+  775  ll
+  776  chown redekonst:redekonst files/
+  777  ll
+  778  ls -l
+  779  rm files/
+  780  rm -r files/
+  781  ln -s /var/www/rede.sixbytesunder.com/ files
+  782  ll
+  783  chown redekonst:redekonst files/
+  784  ll
+  785  vim /etc/nginx/conf.d/rede.sixbytesunder.com.conf 
+  786  ll
+  787  cd files/
+  788  ll
+  789  mv index.html index-old.html
+  790  nginx reload
+  791  nginx -s reload
+  792  du -sh /var/www/rede.sixbytesunder.com/
+  793  exit
+  794  cd /home/redekonst/
+  795  ll
+  796  rm files/
+  797  rm -r files/
+  798  ls -l
+  799  rm files
+  800  ll
+  801  cd /var/www/
+  802  ll
+  803  rm -rf rede.sixbytesunder.com/
+  804  ll
+  805  userdel redekonst
+  806  userdel -r redekonst
+  807  cat /etc/shadow
+  808  cd /home/
+  809  lll
+  810  ll
+  811  rm -rf redekonst/
+  812  rm /etc/nginx/conf.d/rede.sixbytesunder.com.conf 
+  813  nginx -s reload
+  814  exit
+  815  cd /home/vmail/allurcode.com/wojtek/Maildir/
+  816  mutt -f .
+  817  cd ../../sayhello/Maildir/
+  818  mutt -f .
+  819  ../../../dziwnytenswiat.pl/wojtek/Maildir/
+  820  mutt -f .
+  821  ../../../sixbytesunder.com/wojtek/Maildir/
+  822  cd ../../../sixbytesunder.com/wojtek/Maildir/
+  823  mutt -f .
+  824  yum update
+  825  exit
+  826  certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini -d sixbytesunder.com -d *.sixbytesunder.com
+  827  vim ~/.secrets/certbot/cloudflare.ini
+  828  certbot renew
+  829  certbot renew --quiet --post-hook "systemctl reload nginx"
+  830  tail -f /var/log/maillog
+  831  dovecot -n
+  832  tail -f /var/log/maillog
+  833  vim /etc/dovecot/dovecot.conf
+  834  service dovecot status
+  835  service dovecot restart
+  836  service dovecot status
+  837  systemctl status dovecot.service
+  838  vim /etc/dovecot/dovecot.conf
+  839  service dovecot restart
+  840  /etc/init.d/dovecot restart
+  841  service dovecot start
+  842  mount proc -o remount,hidepid=2 && mount proc -o remount,hidepid=0 && systemctl restart polkit.service
+  843  service dovecot start
+  844  mount | grep proc
+  845  yum update
+  846  groupadd -g 23 nohidproc
+  847  usermod -a -G nohidproc polkitd
+  848  mount -o remount,rw,hidepid=2,gid=nohidproc /proc
+  849  systemctl restart polkit
+  850  vim /etc/fstab 
+  851  mount -a
+  852  systemctl restart polkit
+  853  nginx -t
+  854   dovecot start
+  855  systemctl restart dovecot
+  856  vim /etc/fstab 
+  857  vim /etc/group
+  858  usermod -a -G procread polkitd
+  859  vim /etc/group
+  860  groupadd procread
+  861  vim /etc/group
+  862  usermod -a -G procread polkitd
+  863  service polkit restart
+  864  systemctl is-system running
+  865  systemctl | grep fail
+  866  systemctl | grep polkit
+  867  systemctl status dovecot
+  868  ps -ef | grep dovecot
+  869  exit
+  870  who
+  871  yum update
+  872  df -h
+  873  pm2 ls
+  874  exit
+  875  yum update
+  876  dnf
+  877  exit
+  878  who
+  879  yum update
+  880  exit
+  881  ls -al
+  882  mc
+  883  git clone https://github.com/SixBytesUnder/Fork-and-Spoon.git .
+  884  ls -al
+  885  cd ..
+  886  chown -R forkandspoon:forkandspoon forkandspoon/
+  887  cd forkandspoon/
+  888  ls -al
+  889  yum update
+  890  exit
+  891  who
+  892  yum update
+  893  exit
+  894  crontab -e
+  895  certbot renew
+  896  systemctl reload nginx
+  897  systemctl restart polkit.service
+  898  mount proc -o remount,hidepid=0
+  899  systemctl restart polkit.service
+  900  systemctl reload nginx
+  901  mount | grep proc
+  902  rpm -qa | grep polkit
+  903  vim /etc/fstab 
+  904  systemctl restart postfix
+  905  systemctl reload nginx
+  906  cd /home/vmail/allurcode.com/wojtek/Maildir/
+  907  mutt -f .
+  908  cd ../../sayhello/
+  909  cd Maildir/
+  910  mutt -f .
+  911  cd ../../../dziwnytenswiat.pl/wojtek/Maildir/
+  912  mutt -f .
+  913  yum update
+  914  who
+  915  exit
+  916  yum update
+  917  python --version
+  918  py
+  919  exit
+  920  vim /etc/yum.repos.d/webtatic
+  921  vim /etc/yum.repos.d/webadmin.repo
+  922  wget https://download.webmin.com/jcameron-key.asc
+  923  rpm --import jcameron-key.asc
+  924  yum install webadmin
+  925  rm /etc/yum.repos.d/webadmin.repo
+  926  vim /etc/yum.repos.d/webmin.repo
+  927  yum install webmin
+  928  who
+  929  exit
+  930  vim /etc/ssl/certs/cert.pem
+  931  vim /etc/ssl/private/key/pem
+  932  mkdir /etc/ssl/private
+  933  vim /etc/ssl/private/key.pem
+  934  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  935  nginx -t
+  936  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  937  nginx -t
+  938  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  939  nginx -t
+  940  systemctl restart nginx
+  941  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  942  vim /etc/nginx/conf.d/warriorsjourney.sixbytesunder.com.conf 
+  943  nginx -t
+  944  systemctl restart nginx
+  945  vim /etc/nginx/conf.d/warriorsjourney.sixbytesunder.com.conf 
+  946  vim /etc/nginx/conf.d/memeclicker.sixbytesunder.com.conf 
+  947  nginx -t
+  948  vim /etc/nginx/conf.d/infoboard.sixbytesunder.com.conf 
+  949  vim /etc/nginx/conf.d/memeclicker.sixbytesunder.com.conf 
+  950  vim /etc/nginx/conf.d/infoboard.sixbytesunder.com.conf 
+  951  nginx -t
+  952  vim /etc/nginx/conf.d/infoboard.sixbytesunder.com.conf 
+  953  vim /etc/nginx/conf.d/firstseed.sixbytesunder.com.conf 
+  954  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  955  vim /etc/letsencrypt/options-ssl-nginx.conf
+  956  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  957  vim /etc/nginx/conf.d/firstseed.sixbytesunder.com.conf 
+  958  vim /etc/nginx/conf.d/infoboard.sixbytesunder.com.conf 
+  959  vim /etc/nginx/conf.d/firstseed.sixbytesunder.com.conf 
+  960  vim /etc/nginx/conf.d/memeclicker.sixbytesunder.com.conf 
+  961  vim /etc/nginx/conf.d/warriorsjourney.sixbytesunder.com.conf 
+  962  vim /etc/nginx/conf.d/mataba.sixbytesunder.com.conf 
+  963  nginx -t
+  964  systemctl restart nginx
+  965  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  966  vim /etc/letsencrypt/options-ssl-nginx.conf
+  967  nginx -t
+  968  systemctl reload nginx
+  969  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  970  vim /etc/nginx/conf.d/firstseed.sixbytesunder.com.conf 
+  971  vim /etc/nginx/conf.d/infoboard.sixbytesunder.com.conf
+  972  vim /etc/nginx/conf.d/mataba.sixbytesunder.com.conf 
+  973  vim /etc/nginx/conf.d/memeclicker.sixbytesunder.com.conf 
+  974  vim /etc/nginx/conf.d/warriorsjourney.sixbytesunder.com.conf 
+  975  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  976  nginx -t
+  977  systemctl reload nginx
+  978  vim /etc/nginx/conf.d/dziwnytenswiat.conf 
+  979  vim /etc/nginx/conf.d/sixbytesunder.com.conf 
+  980  vim /etc/nginx/conf.d/warriorsjourney.sixbytesunder.com.conf 
+  981  vim /etc/ssl/certs/cert-dziwnytenswiat.pem
+  982  vim /etc/ssl/private/key-dziwnytenswiat.pem
+  983  vim /etc/nginx/conf.d/dziwnytenswiat.conf 
+  984  nginx -t
+  985  systemctl reload nginx
+  986  vim /etc/ssl/certs/cert-allurcode.pem
+  987  vim /etc/ssl/private/key-allurcode.pem
+  988  vim /etc/nginx/conf.d/allurcode.com.conf 
+  989  nginx -t
+  990  systemctl reload nginx
+  991  vim /etc/ssl/certs/cert-forkandspoon.pem
+  992  vim /etc/ssl/private/key-forkandspoon.pem
+  993  vim /etc/nginx/conf.d/forkandspoon.pl.conf 
+  994  nginx -t
+  995  vim /etc/nginx/conf.d/lunch.forkandspoon.pl.conf 
+  996  nginx -t
+  997  vim /etc/nginx/conf.d/forkandspoon.pl.conf 
+  998  nginx -t
+  999  systemctl reload nginx
+ 1000  exit
+ 1001  history | certbot
+ 1002  history | grep certbot
+ 1003  history > hist.txt
