@@ -19,14 +19,14 @@
   "dependencies": {
     "@jest/globals": "^29.7.0",
     "encoding": "^0.1.13",
-    "glob": "^11.0.0",
+    "glob": "^11.0.1",
     "iconv-lite": "^0.6.3",
-    "inquirer": "^12.3.0",
-    "ora": "^8.1.1"
+    "inquirer": "^12.5.0",
+    "ora": "^8.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
     "@types/jest": "^29.5.14",
     "babel-jest": "^29.7.0",
     "eslint": "^8.2.0",
