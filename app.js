@@ -50,11 +50,17 @@ export function processFile(file) {
   });
 }
 
-async function run() {
+export async function run() {
   const foundFiles = await getFiles();
   const answers = await promptUser(foundFiles);
-  const files = answers.files.map(processFile);
-  await Promise.all(files);
+
+  if (answers && answers.files) {
+    const files = answers.files.map(processFile);
+    await Promise.all(files);
+  }
 }
 
-run();
+// This allows the script to be executed directly, but also imported for testing.
+if (process.env.NODE_ENV !== 'test') {
+  run();
+}
