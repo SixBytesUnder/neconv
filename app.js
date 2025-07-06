@@ -5,7 +5,6 @@ import encoding from 'encoding';
 import iconvlite from 'iconv-lite';
 import path from 'path';
 import ora from 'ora';
-// import fs from 'fs';
 import { readFile, writeFile } from 'fs';
 import { glob } from 'glob';
 
