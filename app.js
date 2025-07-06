@@ -52,9 +52,15 @@ export function processFile(file) {
 
 export async function run() {
   const foundFiles = await getFiles();
+
+  if (foundFiles.length === 0) {
+    console.log('No .txt or .srt files found in the current directory.');
+    return;
+  }
+
   const answers = await promptUser(foundFiles);
 
-  if (answers && answers.files) {
+  if (answers && answers.files && answers.files.length > 0) {
     const files = answers.files.map(processFile);
     await Promise.all(files);
   }

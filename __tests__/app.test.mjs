@@ -30,9 +30,10 @@ jest.unstable_mockModule('fs', () => ({
     writeFile: jest.fn(),
 }));
 
-// Mock console.error
+// Mock console
 global.console = {
     ...global.console,
+    log: jest.fn(),
     error: jest.fn(),
 };
 
@@ -157,10 +158,8 @@ describe('neconv application', () => {
 
             glob.mockResolvedValue(mockFiles);
             inquirer.prompt.mockResolvedValue(userSelection);
-            // Since processFile is complex, we trust its own tests and mock it here
             const processFile = jest.fn().mockResolvedValue();
 
-            // Re-import run with the mocked processFile
             const { run } = await import('../app.js');
 
             await run();
@@ -185,6 +184,17 @@ describe('neconv application', () => {
             await run();
 
             expect(processFile).not.toHaveBeenCalled();
+        });
+
+        it('should log a message if no files are found', async () => {
+            glob.mockResolvedValue([]); // No files found
+
+            const { run } = await import('../app.js');
+
+            await run();
+
+            expect(console.log).toHaveBeenCalledWith('No .txt or .srt files found in the current directory.');
+            expect(inquirer.prompt).not.toHaveBeenCalled();
         });
     });
 });
