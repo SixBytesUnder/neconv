@@ -1,6 +1,6 @@
 1
 00:01:27,125 --> 00:01:31,075
-www.NapiProjekt.pl - nowa jakosc napisów.
+www.NapiProjekt.pl - nowa jakosc napisĂłw.
 Napisy zostaly specjalnie dopasowane do Twojej wersji filmu.
 
 2
@@ -9,7 +9,7 @@ SONDA 203
 
 3
 00:01:36,583 --> 00:01:39,208
-MATKA 9001 WYBUDZENIE…
+MATKA 9001 WYBUDZENIEâ€¦
 
 4
 00:01:41,792 --> 00:01:43,768
@@ -34,7 +34,7 @@ OBIEKT ZABEZPIECZONY
 
 9
 00:02:49,708 --> 00:02:52,608
-PROTOKÓL POWROTNY ZAINICJOWANY
+PROTOKĂ“L POWROTNY ZAINICJOWANY
 
 10
 00:04:36,667 --> 00:04:43,667
@@ -88,7 +88,7 @@ Blagam, nie.
 
 22
 00:05:52,750 --> 00:05:56,590
-Wydalem cala wyplate na za krótki pasek.
+Wydalem cala wyplate na za krĂłtki pasek.
 
 23
 00:05:56,750 --> 00:05:58,184
@@ -104,7 +104,7 @@ Moze to przez te diete obrotowa.
 
 26
 00:06:04,958 --> 00:06:07,858
-Gdzie sie obróce, tam cos jem.
+Gdzie sie obrĂłce, tam cos jem.
 
 27
 00:06:08,208 --> 00:06:09,625
@@ -153,7 +153,7 @@ zabieraja nam zycie!</i>
 
 38
 00:06:50,375 --> 00:06:51,934
-KOLONIA GÓRNICZA JACKSON'S STAR
+KOLONIA GĂ“RNICZA JACKSON'S STAR
 POPULACJA: 2781
 
 39
@@ -237,7 +237,7 @@ Nie pakuj sie w klopoty.
 
 58
 00:07:35,875 --> 00:07:38,809
-<i>Przyjmiemy wszystkich pracowników.</i>
+<i>Przyjmiemy wszystkich pracownikĂłw.</i>
 
 59
 00:07:38,833 --> 00:07:40,143
@@ -261,7 +261,7 @@ Powodzenia!
 
 64
 00:07:49,375 --> 00:07:51,309
-Chodzi o papiery podrózne.
+Chodzi o papiery podrĂłzne.
 
 65
 00:07:51,333 --> 00:07:52,476
@@ -309,21 +309,21 @@ Choroba pluc, od kopalni.
 
 76
 00:08:16,625 --> 00:08:19,851
-<i>Sprzedaja nadzieje, zeby miec niewolników!</i>
+<i>Sprzedaja nadzieje, zeby miec niewolnikĂłw!</i>
 
 77
 00:08:19,875 --> 00:08:25,542
-<i>Sprzedaja nadzieje, zeby miec niewolników!
+<i>Sprzedaja nadzieje, zeby miec niewolnikĂłw!
 Obudzcie sie!</i>
 
 78
 00:08:36,832 --> 00:08:39,851
 Przykro mi,
-ale wciaz nie spelniasz warunków.
+ale wciaz nie spelniasz warunkĂłw.
 
 79
 00:08:39,875 --> 00:08:42,518
-Brakuje robotników. Idziesz do kopalni.
+Brakuje robotnikĂłw. Idziesz do kopalni.
 
 80
 00:08:42,542 --> 00:08:43,832
@@ -404,7 +404,7 @@ Niepotrzebnie cie zostawilam.
 
 99
 00:09:29,375 --> 00:09:33,018
-<i>Sprzedaja nadzieje, zeby miec niewolników!</i>
+<i>Sprzedaja nadzieje, zeby miec niewolnikĂłw!</i>
 
 100
 00:09:33,042 --> 00:09:36,786
@@ -433,7 +433,7 @@ Czesc.
 
 106
 00:10:19,542 --> 00:10:20,542
-Rany…
+Ranyâ€¦
 
 107
 00:10:20,583 --> 00:10:22,000
@@ -445,11 +445,11 @@ Czesc, Rain. Dawno cie nie bylo.
 
 109
 00:10:25,458 --> 00:10:27,658
-Mówilam, ze sie zjawi.
+MĂłwilam, ze sie zjawi.
 
 110
 00:10:27,792 --> 00:10:29,992
-Wisisz mi piec dolców.
+Wisisz mi piec dolcĂłw.
 
 111
 00:10:30,208 --> 00:10:31,333
@@ -457,7 +457,7 @@ Andy!
 
 112
 00:10:34,250 --> 00:10:36,434
-Dlaczego slepy górnik wpadl w dól?
+Dlaczego slepy gĂłrnik wpadl w dĂłl?
 
 113
 00:10:36,458 --> 00:10:37,792
@@ -494,7 +494,7 @@ Tesknilam za toba.
 
 121
 00:10:58,667 --> 00:11:00,500
-Mój brat tez.
+MĂłj brat tez.
 
 122
 00:11:05,208 --> 00:11:07,308
@@ -506,7 +506,7 @@ Slyszalam o waszym tacie.
 
 124
 00:11:10,750 --> 00:11:12,070
-Wspólczuje.
+WspĂłlczuje.
 
 125
 00:11:12,542 --> 00:11:15,934
@@ -532,7 +532,7 @@ Ladujemy wczoraj ostatni tesotek.
 130
 00:11:26,125 --> 00:11:29,965
 Jestesmy z 300 km
-nad powierzchnia, a tu…
+nad powierzchnia, a tuâ€¦
 
 131
 00:11:30,583 --> 00:11:32,101
@@ -578,7 +578,7 @@ Po co tu siedziec
 141
 00:11:50,167 --> 00:11:54,018
 i czekac na zgody,
-których firma nam nie da?
+ktĂłrych firma nam nie da?
 
 142
 00:11:54,042 --> 00:11:56,226
@@ -586,7 +586,7 @@ Holownik dowiezie nas na Yvaga.
 
 143
 00:11:56,250 --> 00:11:59,150
-Podróz na Yvaga zajmuje 9 lat.
+PodrĂłz na Yvaga zajmuje 9 lat.
 
 144
 00:11:59,208 --> 00:12:01,434
@@ -621,7 +621,7 @@ Jestescie stuknieci.
 
 151
 00:12:23,125 --> 00:12:24,333
-To…
+Toâ€¦
 
 152
 00:12:24,500 --> 00:12:26,060
@@ -629,7 +629,7 @@ Pomozesz nam?
 
 153
 00:12:28,125 --> 00:12:29,917
-Ja mam pomóc?
+Ja mam pomĂłc?
 
 154
 00:12:32,083 --> 00:12:33,083
@@ -652,7 +652,7 @@ i nas wpusci.
 
 158
 00:12:42,375 --> 00:12:43,768
-To jedyny sposób.
+To jedyny sposĂłb.
 
 159
 00:12:43,792 --> 00:12:45,875
@@ -660,7 +660,7 @@ A jesli nas zlapia?
 
 160
 00:12:46,042 --> 00:12:48,643
-Nigdy nie dostaniemy zgody na podróz.
+Nigdy nie dostaniemy zgody na podrĂłz.
 
 161
 00:12:48,667 --> 00:12:50,667
@@ -689,7 +689,7 @@ To zlom Wey-Yu,
 
 167
 00:13:01,458 --> 00:13:03,059
-który znalazl twój tata.
+ktĂłry znalazl twĂłj tata.
 
 168
 00:13:03,083 --> 00:13:05,000
@@ -710,7 +710,7 @@ Zaczekaj!
 
 172
 00:13:10,875 --> 00:13:13,143
-Daruj. Mój kuzyn bywa fiutem,
+Daruj. MĂłj kuzyn bywa fiutem,
 
 173
 00:13:13,167 --> 00:13:15,518
@@ -730,7 +730,7 @@ Musimy to wziac sami.
 
 177
 00:13:25,417 --> 00:13:26,458
-Ja…
+Jaâ€¦
 
 178
 00:13:27,250 --> 00:13:29,726
@@ -742,7 +742,7 @@ A ty?
 
 180
 00:13:36,000 --> 00:13:39,552
-To naprawde takie proste, jak mówisz?
+To naprawde takie proste, jak mĂłwisz?
 
 181
 00:13:40,500 --> 00:13:42,809
@@ -811,7 +811,7 @@ Popatrzcie sobie przez okno,
 
 197
 00:14:48,792 --> 00:14:50,992
-bo juz tu nie wrócimy.
+bo juz tu nie wrĂłcimy.
 
 198
 00:15:04,250 --> 00:15:05,434
@@ -843,7 +843,7 @@ I tak to sie robi!
 
 205
 00:16:53,958 --> 00:16:54,958
-Czy to…
+Czy toâ€¦
 
 206
 00:16:56,750 --> 00:16:58,000
@@ -855,7 +855,7 @@ To nasze slonce.
 
 208
 00:17:12,000 --> 00:17:14,809
-Mówia, ze na Yvaga sa niesamowite wschody.
+MĂłwia, ze na Yvaga sa niesamowite wschody.
 
 209
 00:17:14,833 --> 00:17:16,393
@@ -920,7 +920,7 @@ Blizej, Navarro.
 
 224
 00:18:03,583 --> 00:18:05,783
-Dobra. Dopasuje obrót.
+Dobra. Dopasuje obrĂłt.
 
 225
 00:18:21,958 --> 00:18:24,708
@@ -956,7 +956,7 @@ Ze co?
 
 233
 00:18:41,792 --> 00:18:44,101
-Co mówisz? Zle to brzmi.
+Co mĂłwisz? Zle to brzmi.
 
 234
 00:18:44,125 --> 00:18:45,325
@@ -976,7 +976,7 @@ Andy.
 
 238
 00:18:50,583 --> 00:18:51,583
-Góra.
+GĂłra.
 
 239
 00:18:52,208 --> 00:18:54,808
@@ -992,7 +992,7 @@ Robic to, co najlepsze dla Rain.
 
 242
 00:19:01,333 --> 00:19:03,684
-Twój tata mi ja zapisal.
+TwĂłj tata mi ja zapisal.
 
 243
 00:19:03,708 --> 00:19:04,708
@@ -1000,7 +1000,7 @@ Wiem.
 
 244
 00:19:05,792 --> 00:19:07,601
-I mnóstwo kiepskich zartów.
+I mnĂłstwo kiepskich zartĂłw.
 
 245
 00:19:07,625 --> 00:19:09,000
@@ -1020,7 +1020,7 @@ Szybko. Za 2 minuty dokujemy.
 
 249
 00:19:38,000 --> 00:19:39,042
-Wlóz.
+WlĂłz.
 
 250
 00:19:39,208 --> 00:19:40,708
@@ -1060,7 +1060,7 @@ Nie. Niczego nie dotykaj.
 
 259
 00:19:55,542 --> 00:19:57,750
-Daj mu, kurwa, spokój.
+Daj mu, kurwa, spokĂłj.
 
 260
 00:19:58,875 --> 00:20:00,101
@@ -1296,7 +1296,7 @@ Spokojnie.
 
 318
 00:25:20,625 --> 00:25:21,851
-Moze wrócicie?
+Moze wrĂłcicie?
 
 319
 00:25:21,875 --> 00:25:23,555
@@ -1338,11 +1338,11 @@ Zlapcie, a my skolujemy paliwo.
 
 328
 00:26:02,917 --> 00:26:03,917
-Stój.
+StĂłj.
 
 329
 00:26:05,167 --> 00:26:07,267
-360 metrów na wprost.
+360 metrĂłw na wprost.
 
 330
 00:26:08,625 --> 00:26:09,893
@@ -1378,11 +1378,11 @@ Wygladasz jak pala.
 
 337
 00:26:20,333 --> 00:26:21,476
-<i>Nie rób tak, bo oberwiesz.</i>
+<i>Nie rĂłb tak, bo oberwiesz.</i>
 
 338
 00:26:21,500 --> 00:26:23,180
-Daj mu spokój.
+Daj mu spokĂłj.
 
 339
 00:26:23,292 --> 00:26:24,809
@@ -1419,7 +1419,7 @@ Nie moga krzywdzic ludzi.
 
 347
 00:26:40,542 --> 00:26:44,766
-Poswiecil troje górników,
+Poswiecil troje gĂłrnikĂłw,
 zeby ratowac wielu.
 
 348
@@ -1500,7 +1500,7 @@ Jakis dupek.
 
 367
 00:28:47,750 --> 00:28:50,958
-Nie mów mojemu bratu.
+Nie mĂłw mojemu bratu.
 
 368
 00:28:52,250 --> 00:28:53,768
@@ -1563,7 +1563,7 @@ Az ciarki przechodza.
 
 382
 00:29:57,417 --> 00:30:00,969
-Slyszales o górniku, co zgubil tylek?
+Slyszales o gĂłrniku, co zgubil tylek?
 
 383
 00:30:01,958 --> 00:30:03,101
@@ -1579,11 +1579,11 @@ Mozesz sie wylaczyc?
 
 386
 00:30:07,583 --> 00:30:09,101
-Mówiles, ze sie denerwujesz.
+MĂłwiles, ze sie denerwujesz.
 
 387
 00:30:09,125 --> 00:30:11,059
-- Próbowalem…
+- PrĂłbowalemâ€¦
 - Jezu!
 
 388
@@ -1628,7 +1628,7 @@ Lipnych ludzi nie wpuszczaja.
 
 398
 00:30:34,667 --> 00:30:37,835
-Wole okreslenie „sztuczna osoba”.
+Wole okreslenie â€žsztuczna osobaâ€ť.
 
 399
 00:30:39,583 --> 00:30:40,783
@@ -1657,7 +1657,7 @@ jesli cie wezmie.</i>
 
 405
 00:30:54,292 --> 00:30:55,972
-Ale na miejscu…
+Ale na miejscuâ€¦
 
 406
 00:30:56,875 --> 00:30:58,250
@@ -1673,7 +1673,7 @@ Skonczyles?
 
 409
 00:31:02,333 --> 00:31:03,893
-<i>Mówie prawde.</i>
+<i>MĂłwie prawde.</i>
 
 410
 00:31:07,208 --> 00:31:08,958
@@ -1717,7 +1717,7 @@ Dla niego to przeciez bez znaczenia.
 
 420
 00:31:48,708 --> 00:31:50,167
-Nie jest…
+Nie jestâ€¦
 
 421
 00:31:51,333 --> 00:31:52,958
@@ -1729,7 +1729,7 @@ Sygnal dochodzi stad.
 
 423
 00:32:28,375 --> 00:32:30,768
-Mówiles, ze to porzucona stacja.
+MĂłwiles, ze to porzucona stacja.
 
 424
 00:32:30,792 --> 00:32:31,792
@@ -1753,7 +1753,7 @@ Patrz, Andy.
 
 429
 00:32:41,375 --> 00:32:44,226
-Móglbym tym usmazyc syntetyka.
+MĂłglbym tym usmazyc syntetyka.
 
 430
 00:32:44,250 --> 00:32:46,650
@@ -1846,7 +1846,7 @@ Tak!
 
 452
 00:34:18,958 --> 00:34:21,208
-Pomóz, Bjorn.
+PomĂłz, Bjorn.
 
 453
 00:34:30,750 --> 00:34:32,550
@@ -1858,7 +1858,7 @@ Dobra?
 
 455
 00:34:33,917 --> 00:34:35,125
-Raz, dwa…
+Raz, dwaâ€¦
 
 456
 00:34:36,250 --> 00:34:37,250
@@ -1973,7 +1973,7 @@ Co robisz?
 483
 00:36:19,000 --> 00:36:23,059
 Jesli modul dziala,
-spróbuje wgrac Andy'emu jego dane.
+sprĂłbuje wgrac Andy'emu jego dane.
 
 484
 00:36:23,083 --> 00:36:26,251
@@ -1981,7 +1981,7 @@ Wyzsze uprawnienia otworza drzwi.
 
 485
 00:36:27,000 --> 00:36:30,552
-PRÓBKA UKONCZONA
+PRĂ“BKA UKONCZONA
 DRUKOWANIE WSTRZYMANE
 
 486
@@ -2010,7 +2010,7 @@ Dobra, mamo.
 
 492
 00:37:42,333 --> 00:37:43,625
-Pomóz!
+PomĂłz!
 
 493
 00:37:43,792 --> 00:37:44,872
@@ -2058,7 +2058,7 @@ To z tego syntetyka.
 
 504
 00:38:10,708 --> 00:38:13,208
-Spróbuj dolozyc Andy'emu.
+SprĂłbuj dolozyc Andy'emu.
 
 505
 00:38:16,708 --> 00:38:18,028
@@ -2154,7 +2154,7 @@ Bjorn!
 
 528
 00:40:17,917 --> 00:40:19,817
-Pomóz mu! Zrób cos!
+PomĂłz mu! ZrĂłb cos!
 
 529
 00:40:25,583 --> 00:40:27,783
@@ -2167,7 +2167,7 @@ Chodz!
 
 531
 00:40:30,875 --> 00:40:32,875
-- Pomóz mi!
+- PomĂłz mi!
 - Zostaw.
 
 532
@@ -2177,7 +2177,7 @@ Chodz!
 
 533
 00:40:34,667 --> 00:40:36,542
-Jesli tu wejda…
+Jesli tu wejdaâ€¦
 
 534
 00:40:36,875 --> 00:40:37,875
@@ -2295,11 +2295,11 @@ Syntetyk ND-255 Weyland-Yutani.
 
 562
 00:42:29,958 --> 00:42:33,268
-Kategoria górnictwo i bezpieczenstwo.
+Kategoria gĂłrnictwo i bezpieczenstwo.
 
 563
 00:42:33,292 --> 00:42:34,476
-Mówicie na mnie Andy.
+MĂłwicie na mnie Andy.
 
 564
 00:42:34,500 --> 00:42:36,060
@@ -2352,7 +2352,7 @@ Co mamy robic?
 
 576
 00:43:01,458 --> 00:43:03,558
-Wiesz, jak jej pomóc?
+Wiesz, jak jej pomĂłc?
 
 577
 00:43:04,250 --> 00:43:06,976
@@ -2397,7 +2397,7 @@ Co? Nie.
 
 587
 00:44:02,333 --> 00:44:05,597
-Powiesz nam, jak mozemy jej pomóc?
+Powiesz nam, jak mozemy jej pomĂłc?
 
 588
 00:44:05,667 --> 00:44:08,809
@@ -2442,7 +2442,7 @@ Slucham?
 
 598
 00:44:29,625 --> 00:44:33,809
-Nasienie, które polaczy sie z jej DNA
+Nasienie, ktĂłre polaczy sie z jej DNA
 i gwaltownie z niej wyrosnie.
 
 599
@@ -2455,17 +2455,17 @@ Ksenomorf XX121.
 
 601
 00:44:50,625 --> 00:44:55,351
-Jeden z naszych statków natknal sie
+Jeden z naszych statkĂłw natknal sie
 na ten gatunek dwie dekady temu.
 
 602
 00:44:55,375 --> 00:44:58,851
-Z siódemki pasazerów <i>USS Nostromo</i>
+Z siĂłdemki pasazerĂłw <i>USS Nostromo</i>
 przezyla jedna osoba,
 
 603
 00:44:58,875 --> 00:45:01,684
-która wyrzucila istote przez sluze.
+ktĂłra wyrzucila istote przez sluze.
 
 604
 00:45:01,708 --> 00:45:04,559
@@ -2490,7 +2490,7 @@ Lecz brak tlenu
 609
 00:45:13,833 --> 00:45:17,809
 i pozywienia nie stanowi
-przeszkody dla tego…
+przeszkody dla tegoâ€¦
 
 610
 00:45:17,833 --> 00:45:19,393
@@ -2510,7 +2510,7 @@ Siala zniszczenie na stacji,
 
 614
 00:45:28,083 --> 00:45:30,809
-dopóki nie rozprawily sie z nia
+dopĂłki nie rozprawily sie z nia
 niedobitki ochrony,
 
 615
@@ -2527,7 +2527,7 @@ Siarkowy i fluorowodorowy.
 
 618
 00:45:37,500 --> 00:45:39,309
-Za pózno odcialem stacje.
+Za pĂłzno odcialem stacje.
 
 619
 00:45:39,333 --> 00:45:40,643
@@ -2535,7 +2535,7 @@ Zamknij sie!
 
 620
 00:45:40,667 --> 00:45:42,393
-Mamy w dupie twój statek!
+Mamy w dupie twĂłj statek!
 
 621
 00:45:42,417 --> 00:45:43,583
@@ -2592,7 +2592,7 @@ Ze istota zrobila swoje.
 
 634
 00:47:11,042 --> 00:47:12,722
-O czym on mówi?
+O czym on mĂłwi?
 
 635
 00:47:14,167 --> 00:47:15,417
@@ -2601,7 +2601,7 @@ Posluchaj.
 636
 00:47:15,750 --> 00:47:18,393
 Ludzie przechodza zbyt wiele
-emocjonalnych stadiów,
+emocjonalnych stadiĂłw,
 
 637
 00:47:18,417 --> 00:47:22,934
@@ -2610,7 +2610,7 @@ lecz racjonalna i czasem trudna sciezke.
 
 638
 00:47:22,958 --> 00:47:24,708
-Musisz im pomóc.
+Musisz im pomĂłc.
 
 639
 00:47:24,875 --> 00:47:25,875
@@ -2696,7 +2696,7 @@ Bylem dla ciebie tylko ciezarem.
 
 659
 00:48:07,292 --> 00:48:10,083
-Dzis wreszcie moge pomóc.
+Dzis wreszcie moge pomĂłc.
 
 660
 00:48:10,500 --> 00:48:14,340
@@ -2716,7 +2716,7 @@ Bjorn!
 
 664
 00:48:52,167 --> 00:48:53,167
-Kurwa…
+Kurwaâ€¦
 
 665
 00:48:54,167 --> 00:48:55,143
@@ -2765,7 +2765,7 @@ Andy?
 
 676
 00:49:36,875 --> 00:49:38,625
-Otwórz drzwi!
+OtwĂłrz drzwi!
 
 677
 00:49:44,542 --> 00:49:48,190
@@ -2793,11 +2793,11 @@ Co sie dzieje?
 
 683
 00:49:59,000 --> 00:50:00,125
-Andy…
+Andyâ€¦
 
 684
 00:50:01,792 --> 00:50:04,167
-Andy… szwankuje.
+Andyâ€¦ szwankuje.
 
 685
 00:50:04,625 --> 00:50:06,184
@@ -2805,7 +2805,7 @@ Musze natychmiast odbijac.
 
 686
 00:50:06,208 --> 00:50:07,208
-Musze…
+Muszeâ€¦
 
 687
 00:50:09,458 --> 00:50:10,434
@@ -2817,7 +2817,7 @@ Wszystko gra?
 
 689
 00:50:12,417 --> 00:50:14,375
-Co ci jest? Mów.
+Co ci jest? MĂłw.
 
 690
 00:50:20,333 --> 00:50:21,333
@@ -2861,7 +2861,7 @@ Co sie dzieje?
 
 700
 00:51:12,208 --> 00:51:14,851
-Prosze, nie pozwól mi umrzec.
+Prosze, nie pozwĂłl mi umrzec.
 
 701
 00:51:14,875 --> 00:51:16,958
@@ -2898,7 +2898,7 @@ To bez sensu.
 
 709
 00:53:15,875 --> 00:53:17,726
-Mówiles, ze mamy godziny.
+MĂłwiles, ze mamy godziny.
 
 710
 00:53:17,750 --> 00:53:21,143
@@ -2932,11 +2932,11 @@ PODAJ KOD DOSTEPU
 717
 00:53:47,833 --> 00:53:52,153
 Matko, jaka jest szczelnosc
-zbiorników z Z-01?
+zbiornikĂłw z Z-01?
 
 718
 00:53:53,208 --> 00:53:55,500
-SZCZELNOSC ZBIORNIKÓW
+SZCZELNOSC ZBIORNIKĂ“W
 
 719
 00:53:56,625 --> 00:53:58,625
@@ -2960,11 +2960,11 @@ To jedyna droga.
 
 724
 00:54:26,333 --> 00:54:27,417
-Andy…?
+Andyâ€¦?
 
 725
 00:54:31,333 --> 00:54:33,059
-Uslyszalem w glowie twój glos.
+Uslyszalem w glowie twĂłj glos.
 
 726
 00:54:33,083 --> 00:54:34,163
@@ -2976,7 +2976,7 @@ Sztuczna osoba ND-255.
 
 728
 00:54:37,833 --> 00:54:41,351
-Twój model byl kluczem
+TwĂłj model byl kluczem
 do kolonizacji planet.
 
 729
@@ -2985,7 +2985,7 @@ To zaszczyt cie widziec.
 
 730
 00:54:43,333 --> 00:54:46,033
-Pozwól, ze sie przedstawie.
+PozwĂłl, ze sie przedstawie.
 
 731
 00:54:46,250 --> 00:54:48,434
@@ -3001,7 +3001,7 @@ Mam tylko jedna dyrektywe.
 
 734
 00:54:54,250 --> 00:54:57,250
-Robic to, co najlepsze dla…
+Robic to, co najlepsze dlaâ€¦
 
 735
 00:54:58,625 --> 00:55:01,518
@@ -3062,7 +3062,7 @@ Parazytoidy nie maja oczu.
 749
 00:55:43,083 --> 00:55:46,726
 Namierzaja po dzwieku
-i przede wszystkim po zródle ciepla.
+i przede wszystkim po zrĂłdle ciepla.
 
 750
 00:55:46,750 --> 00:55:47,750
@@ -3141,7 +3141,7 @@ a wtedy was dostrzega.
 
 768
 00:57:21,875 --> 00:57:23,675
-Pot, gesia skórka…
+Pot, gesia skĂłrkaâ€¦
 
 769
 00:57:23,792 --> 00:57:25,917
@@ -3149,7 +3149,7 @@ Tak sie chlodzicie.
 
 770
 00:57:26,083 --> 00:57:27,883
-Pilnujcie objawów.
+Pilnujcie objawĂłw.
 
 771
 00:57:28,458 --> 00:57:31,358
@@ -3205,7 +3205,7 @@ Jestem tu.
 
 784
 01:02:04,917 --> 01:02:07,042
-<i>Pomóz mi.</i>
+<i>PomĂłz mi.</i>
 
 785
 01:02:07,208 --> 01:02:09,809
@@ -3225,7 +3225,7 @@ Po lewej masz klucz.
 
 789
 01:02:21,667 --> 01:02:22,667
-<i>Pomóz.</i>
+<i>PomĂłz.</i>
 
 790
 01:02:22,833 --> 01:02:24,059
@@ -3306,7 +3306,7 @@ Chodzmy.
 
 809
 01:06:57,667 --> 01:06:58,667
-Kay…
+Kayâ€¦
 
 810
 01:06:59,917 --> 01:07:01,893
@@ -3314,7 +3314,7 @@ Jestesmy. Spokojnie.
 
 811
 01:07:01,917 --> 01:07:03,477
-Otwórz, Andy.
+OtwĂłrz, Andy.
 
 812
 01:07:03,833 --> 01:07:05,153
@@ -3326,11 +3326,11 @@ Wyciagniemy cie.
 
 814
 01:07:07,667 --> 01:07:08,976
-Otwórz drzwi.
+OtwĂłrz drzwi.
 
 815
 01:07:09,000 --> 01:07:10,000
-Otwórz!
+OtwĂłrz!
 
 816
 01:07:12,083 --> 01:07:13,250
@@ -3338,7 +3338,7 @@ Boze!
 
 817
 01:07:13,417 --> 01:07:14,768
-- Otwórz drzwi.
+- OtwĂłrz drzwi.
 - Andy?
 
 818
@@ -3372,11 +3372,11 @@ Istota czeka, az to zrobimy.
 
 825
 01:07:27,792 --> 01:07:29,472
-Otwórz, prosze!
+OtwĂłrz, prosze!
 
 826
 01:07:30,375 --> 01:07:32,059
-- Otwórz!
+- OtwĂłrz!
 - Posluchaj!
 
 827
@@ -3411,7 +3411,7 @@ Istota zdazy dobiec.
 
 834
 01:07:47,458 --> 01:07:50,000
-Prosze, prosze, otwórz.
+Prosze, prosze, otwĂłrz.
 
 835
 01:07:50,167 --> 01:07:51,434
@@ -3423,7 +3423,7 @@ Sluchaj.
 
 837
 01:07:52,458 --> 01:07:53,726
-- Pomóz mi.
+- PomĂłz mi.
 - Musisz biec.
 
 838
@@ -3444,7 +3444,7 @@ Andy, prosze!
 
 842
 01:07:59,333 --> 01:08:00,976
-To jedyny sposób.
+To jedyny sposĂłb.
 
 843
 01:08:01,000 --> 01:08:02,393
@@ -3452,7 +3452,7 @@ Musisz biec!
 
 844
 01:08:02,417 --> 01:08:04,417
-Otwórz te pieprzone…
+OtwĂłrz te pieprzoneâ€¦
 
 845
 01:08:05,708 --> 01:08:07,417
@@ -3460,7 +3460,7 @@ Kay!
 
 846
 01:08:22,292 --> 01:08:23,732
-Sam otworze…
+Sam otworzeâ€¦
 
 847
 01:08:24,250 --> 01:08:25,683
@@ -3472,7 +3472,7 @@ Na pewno.
 
 849
 01:08:34,957 --> 01:08:36,542
-Otwórz drzwi.
+OtwĂłrz drzwi.
 
 850
 01:08:37,167 --> 01:08:39,707
@@ -3504,7 +3504,7 @@ Andy,
 
 857
 01:08:56,875 --> 01:08:59,175
-twoja glówna dyrektywa?
+twoja glĂłwna dyrektywa?
 
 858
 01:09:00,707 --> 01:09:02,507
@@ -3548,7 +3548,7 @@ Dokad teraz?
 
 868
 01:09:47,375 --> 01:09:50,683
-Dokonczymy zadanie, które zlecil mi Rook.
+Dokonczymy zadanie, ktĂłre zlecil mi Rook.
 
 869
 01:09:50,707 --> 01:09:55,476
@@ -3561,7 +3561,7 @@ Wy polecicie na Yvaga,
 
 871
 01:09:57,917 --> 01:09:59,893
-a ja wróce na Jackson
+a ja wrĂłce na Jackson
 
 872
 01:09:59,917 --> 01:10:01,597
@@ -3606,7 +3606,7 @@ Pewnie jakas posrana bron biologiczna.
 
 882
 01:11:04,292 --> 01:11:06,059
-<i>Powtórz moje slowa.</i>
+<i>PowtĂłrz moje slowa.</i>
 
 883
 01:11:06,083 --> 01:11:07,726
@@ -3645,8 +3645,8 @@ Ta stacja miala to zmienic.
 
 891
 01:11:28,708 --> 01:11:33,601
-„Organizm doskonaly”.
-Tak powinno sie mówic o istotach ludzkich.
+â€žOrganizm doskonalyâ€ť.
+Tak powinno sie mĂłwic o istotach ludzkich.
 
 892
 01:11:33,625 --> 01:11:36,625
@@ -3658,7 +3658,7 @@ Tak powinno sie mówic o istotach ludzkich.
 
 894
 01:11:42,833 --> 01:11:47,143
-Wewnatrz parazytoidów
+Wewnatrz parazytoidĂłw
 uzyskanych z DNA ksenomorfa
 
 895
@@ -3685,7 +3685,7 @@ niezwykle niszczycielski patogen,</i>
 900
 01:12:03,875 --> 01:12:08,643
 <i>zmienilem go w cud,
-którego do smierci szukal pan Weyland.</i>
+ktĂłrego do smierci szukal pan Weyland.</i>
 
 901
 01:12:08,667 --> 01:12:10,667
@@ -3701,7 +3701,7 @@ Boski dar dla ludzkosci.
 
 904
 01:12:18,792 --> 01:12:23,434
-<i>dzieki któremu kseno moga dowolnie
+<i>dzieki ktĂłremu kseno moga dowolnie
 przyspieszac i zwalniac metabolizm.</i>
 
 905
@@ -3765,7 +3765,7 @@ Tak. Nowy plan.
 
 919
 01:13:11,000 --> 01:13:11,684
-OTWÓRZ
+OTWĂ“RZ
 
 920
 01:13:11,708 --> 01:13:14,008
@@ -3833,7 +3833,7 @@ Skad to wszystko wiesz?
 
 936
 01:14:00,458 --> 01:14:02,358
-Z gier i magazynów.
+Z gier i magazynĂłw.
 
 937
 01:14:02,667 --> 01:14:04,976
@@ -3841,11 +3841,11 @@ Masz tylko jeden magazynek.
 
 938
 01:14:05,000 --> 01:14:06,560
-450 ladunków.
+450 ladunkĂłw.
 
 939
 01:14:06,667 --> 01:14:09,567
-Których nie mozesz wystrzelic.
+KtĂłrych nie mozesz wystrzelic.
 
 940
 01:14:09,958 --> 01:14:12,858
@@ -3893,7 +3893,7 @@ Wielkie moze.
 
 951
 01:14:32,958 --> 01:14:35,268
-Pójdziemy wzdluz przenosnika.
+PĂłjdziemy wzdluz przenosnika.
 
 952
 01:14:35,292 --> 01:14:36,458
@@ -3945,7 +3945,7 @@ Pracowite istotki.
 
 964
 01:16:44,917 --> 01:16:47,309
-Zawrócmy i poszukajmy innej drogi.
+ZawrĂłcmy i poszukajmy innej drogi.
 
 965
 01:16:47,333 --> 01:16:49,013
@@ -3953,7 +3953,7 @@ To dobry pomysl.
 
 966
 01:16:51,417 --> 01:16:53,643
-Andy, spróbuj otworzyc.
+Andy, sprĂłbuj otworzyc.
 
 967
 01:16:53,667 --> 01:16:54,667
@@ -4005,7 +4005,7 @@ Jestesmy.
 
 979
 01:18:08,125 --> 01:18:09,768
-Traci mnóstwo krwi.
+Traci mnĂłstwo krwi.
 
 980
 01:18:09,792 --> 01:18:12,768
@@ -4021,7 +4021,7 @@ Bo obok nie lezy martwy parazytoid.
 
 983
 01:18:16,875 --> 01:18:19,643
-Zrób cos, Andy. To twoja wina.
+ZrĂłb cos, Andy. To twoja wina.
 
 984
 01:18:19,667 --> 01:18:21,125
@@ -4045,7 +4045,7 @@ Nie.
 
 989
 01:18:41,417 --> 01:18:42,617
-Mam wybór?
+Mam wybĂłr?
 
 990
 01:18:43,500 --> 01:18:46,684
@@ -4136,7 +4136,7 @@ Wez to i wejdz do kriokapsuly.
 
 1011
 01:22:00,792 --> 01:22:04,056
-Na autopilocie wrócisz do kolonii.
+Na autopilocie wrĂłcisz do kolonii.
 
 1012
 01:22:04,458 --> 01:22:05,667
@@ -4156,11 +4156,11 @@ Znajde inna droge.
 
 1016
 01:22:28,042 --> 01:22:29,167
-GÓRA
+GĂ“RA
 
 1017
 01:24:09,167 --> 01:24:11,067
-Pozwól mi to wyjac.
+PozwĂłl mi to wyjac.
 
 1018
 01:24:11,542 --> 01:24:13,742
@@ -4217,15 +4217,15 @@ Dalej!
 
 1031
 01:26:16,500 --> 01:26:18,625
-Prosze, pomóz nam!
+Prosze, pomĂłz nam!
 
 1032
 01:26:20,583 --> 01:26:22,143
-Otwórz drzwi!
+OtwĂłrz drzwi!
 
 1033
 01:26:22,167 --> 01:26:24,393
-<i>Niestety musze odmówic.</i>
+<i>Niestety musze odmĂłwic.</i>
 
 1034
 01:26:24,417 --> 01:26:26,917
@@ -4245,7 +4245,7 @@ Sukinsyn!
 
 1038
 01:26:40,750 --> 01:26:41,893
-Andy, otwórz!
+Andy, otwĂłrz!
 
 1039
 01:26:41,917 --> 01:26:42,917
@@ -4265,7 +4265,7 @@ Niech to szlag!
 
 1043
 01:26:55,125 --> 01:26:58,293
-<i>lecz wiedzcie, ze wam wspólczuje.</i>
+<i>lecz wiedzcie, ze wam wspĂłlczuje.</i>
 
 1044
 01:27:13,917 --> 01:27:16,208
@@ -4277,7 +4277,7 @@ ZDALNE STEROWANIE
 
 1046
 01:27:17,917 --> 01:27:22,429
-<i>zebym mógl przejac sterowanie
+<i>zebym mĂłgl przejac sterowanie
 i cie stad zabrac.</i>
 
 1047
@@ -4302,16 +4302,16 @@ Kim jestes?
 
 1052
 01:27:43,500 --> 01:27:47,148
-Mozesz mi opowiedziec jeden z kawalów?
+Mozesz mi opowiedziec jeden z kawalĂłw?
 
 1053
 01:27:48,333 --> 01:27:51,405
-Czemu potwory nie jedza klaunów?
+Czemu potwory nie jedza klaunĂłw?
 
 1054
 01:27:52,958 --> 01:27:55,458
-- Bo zabawnie…
-- …smakuja.
+- Bo zabawnieâ€¦
+- â€¦smakuja.
 
 1055
 01:27:55,500 --> 01:27:58,200
@@ -4328,8 +4328,8 @@ o zerowej grawitacji.
 
 1058
 01:28:04,125 --> 01:28:06,925
-- Nie moglem…
-- …jej odlozyc.
+- Nie moglemâ€¦
+- â€¦jej odlozyc.
 
 1059
 01:28:09,292 --> 01:28:10,292
@@ -4365,7 +4365,7 @@ Wylaczam generator grawitacji.
 
 1067
 01:28:26,708 --> 01:28:28,333
-<i>dwa, jeden…</i>
+<i>dwa, jedenâ€¦</i>
 
 1068
 01:28:28,417 --> 01:28:29,497
@@ -4493,12 +4493,12 @@ Ty suko.
 
 1099
 01:35:05,250 --> 01:35:07,550
-<i>- cztery, trzy…</i>
+<i>- cztery, trzyâ€¦</i>
 - Chodz!
 
 1100
 01:35:07,750 --> 01:35:09,625
-<i>…dwa, jeden.</i>
+<i>â€¦dwa, jeden.</i>
 
 1101
 01:35:21,208 --> 01:35:22,768
@@ -4568,7 +4568,7 @@ ODLACZENIE MATKI
 
 1117
 01:37:02,875 --> 01:37:04,555
-Zmiana planów.
+Zmiana planĂłw.
 
 1118
 01:37:06,500 --> 01:37:08,600
@@ -4588,7 +4588,7 @@ Zmiana planów.
 
 1122
 01:37:17,333 --> 01:37:19,633
-<i>Niestety musze odmówic.</i>
+<i>Niestety musze odmĂłwic.</i>
 
 1123
 01:37:19,708 --> 01:37:21,148
@@ -4601,7 +4601,7 @@ Lepiej mnie posluchajcie.
 1125
 01:37:24,292 --> 01:37:27,393
 Jestescie nieistotnym trybikiem
-w wielkim…
+w wielkimâ€¦
 
 1126
 01:37:27,417 --> 01:37:28,737
@@ -4618,7 +4618,7 @@ az do Yvaga.
 
 1129
 01:37:55,167 --> 01:37:57,476
-- Ale myslalem…
+- Ale myslalemâ€¦
 - Niewazne.
 
 1130
@@ -4627,7 +4627,7 @@ Lecisz ze mna.
 
 1131
 01:38:00,667 --> 01:38:03,467
-Jesli to najlepsze dla Rain…
+Jesli to najlepsze dla Rainâ€¦
 
 1132
 01:38:04,958 --> 01:38:07,858
@@ -4635,7 +4635,7 @@ Mam dla ciebie nowa dyrektywe.
 
 1133
 01:38:08,833 --> 01:38:11,733
-Rób to, co najlepsze dla nas.
+RĂłb to, co najlepsze dla nas.
 
 1134
 01:38:14,042 --> 01:38:15,042
@@ -4712,7 +4712,7 @@ Rain!
 
 1152
 01:43:58,167 --> 01:43:59,367
-Pomóz jej.
+PomĂłz jej.
 
 1153
 01:44:36,333 --> 01:44:37,333
@@ -4748,8 +4748,8 @@ ZWOLNIENIE LADUNKU AKTYWNE
 
 1161
 01:46:40,208 --> 01:46:43,309
-„Reczne zwolnienie ladunku.
-Przestawic cztery dzwignie”.
+â€žReczne zwolnienie ladunku.
+Przestawic cztery dzwignieâ€ť.
 
 1162
 01:46:43,333 --> 01:46:46,542
@@ -4799,7 +4799,7 @@ KRIODZIENNIK
 1173
 01:51:09,208 --> 01:51:13,528
 <i>To kriodziennik
-holownika górniczego</i> Corbelan.
+holownika gĂłrniczego</i> Corbelan.
 
 1174
 01:51:13,958 --> 01:51:18,184
@@ -4833,6 +4833,6 @@ Tekst - Wojtek Styblinski
 
 1181
 01:58:56,750 --> 01:59:00,700
-www.NapiProjekt.pl - nowa jakosc napisów.
+www.NapiProjekt.pl - nowa jakosc napisĂłw.
 Napisy zostaly specjalnie dopasowane do Twojej wersji filmu.
 
