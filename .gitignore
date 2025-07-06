@@ -7,6 +7,7 @@ yarn-error.log*
 notes.txt
 notes.md
 test/
+test_files/
 
 # Runtime data
 pids
