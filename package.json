@@ -19,7 +19,7 @@
   "dependencies": {
     "@jest/globals": "^30.0.4",
     "encoding": "^0.1.13",
-    "glob": "^11.0.3",
+    "glob": "^11.1.0",
     "iconv-lite": "^0.6.3",
     "inquirer": "^12.7.0",
     "ora": "^8.2.0"
