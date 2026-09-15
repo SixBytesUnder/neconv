@@ -7,6 +7,7 @@ import path from 'path';
 import ora from 'ora';
 import { readFile, writeFile } from 'fs';
 import { glob } from 'glob';
+import jschardet from 'jschardet';
 
 export async function getFiles() {
   return glob('*.{txt,srt}', { nocase: true });
@@ -28,10 +29,25 @@ export function processFile(file) {
       if (error) {
         reject(error);
       } else {
-        const translated = encoding.convert(data, 'UTF-8', 'CP1250');
+        const isPureUTF8 = Buffer.compare(Buffer.from(data.toString('utf8'), 'utf8'), data) === 0;
+
+        let sourceEncoding = 'CP1250';
+        if (isPureUTF8) {
+          sourceEncoding = 'UTF-8';
+        } else {
+          const detected = jschardet.detect(data);
+          if (detected && detected.encoding) {
+            const enc = detected.encoding.toUpperCase();
+            if (enc !== 'UTF-8' && enc !== 'ASCII' && enc !== 'WINDOWS-1252') {
+              sourceEncoding = detected.encoding;
+            }
+          }
+        }
+        
+        const translated = encoding.convert(data, 'UTF-8', sourceEncoding);
         const converted = iconvlite.encode(translated, 'utf8').toString();
         const spinner = ora({
-          text: `${path.basename(file)} - processing...`,
+          text: `${path.basename(file)} - processing [${sourceEncoding}]...`,
           spinner: 'dots2'
         }).start();
 

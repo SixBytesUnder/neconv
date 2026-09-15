@@ -15,6 +15,12 @@ jest.unstable_mockModule('ora', () => ({
     default: jest.fn(() => mockOra),
 }));
 
+jest.unstable_mockModule('jschardet', () => ({
+    default: {
+        detect: jest.fn(() => ({ encoding: 'CP1250', confidence: 1 }))
+    }
+}));
+
 jest.unstable_mockModule('glob', () => ({
     glob: jest.fn(),
 }));
@@ -90,7 +96,7 @@ describe('neconv application', () => {
         const file = 'test.srt';
 
         it('should process a file successfully', async () => {
-            const originalContent = Buffer.from('some text in cp1250');
+            const originalContent = Buffer.from([0xB9, 0xE6]); // CP1250 bytes
 
             readFile.mockImplementation((filePath, callback) => {
                 expect(filePath).toBe(file);
@@ -108,7 +114,7 @@ describe('neconv application', () => {
             expect(readFile).toHaveBeenCalledTimes(1);
             expect(writeFile).toHaveBeenCalledTimes(1);
             expect(ora).toHaveBeenCalledWith({
-                text: `${path.basename(file)} - processing...`,
+                text: `${path.basename(file)} - processing [CP1250]...`,
                 spinner: 'dots2'
             });
             expect(mockOra.start).toHaveBeenCalledTimes(1);

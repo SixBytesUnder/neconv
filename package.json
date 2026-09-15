@@ -1,6 +1,6 @@
 {
   "name": "neconv",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Convert subtitles text files from CP1250 to UTF-8.",
   "type": "module",
   "main": "app.js",
@@ -22,6 +22,7 @@
     "glob": "^11.0.3",
     "iconv-lite": "^0.6.3",
     "inquirer": "^12.7.0",
+    "jschardet": "^3.1.4",
     "ora": "^8.2.0"
   },
   "devDependencies": {
