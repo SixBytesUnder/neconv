@@ -1,6 +1,9 @@
 import neostandard from 'neostandard';
 
 export default [
+  {
+    ignores: ['.agents/**', 'coverage/**']
+  },
   ...neostandard({
     semi: true, // Overrides Standard's default no-semi rule
     env: ['jest', 'node']

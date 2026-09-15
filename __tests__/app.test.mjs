@@ -8,33 +8,48 @@ const mockOra = {
   start: jest.fn().mockReturnThis(),
   succeed: jest.fn().mockReturnThis(),
   fail: jest.fn().mockReturnThis(),
-  stop: jest.fn().mockReturnThis()
+  stop: jest.fn().mockReturnThis(),
+  text: ''
 };
 
-jest.unstable_mockModule('ora', () => ({
-  default: jest.fn(() => mockOra)
-}));
+jest.unstable_mockModule('ora', () => {
+  return {
+    default: jest.fn(() => {
+      return mockOra;
+    })
+  };
+});
 
-jest.unstable_mockModule('jschardet', () => ({
-  default: {
-    detect: jest.fn(() => ({ encoding: 'CP1250', confidence: 1 }))
-  }
-}));
+jest.unstable_mockModule('jschardet', () => {
+  return {
+    default: {
+      detect: jest.fn(() => {
+        return { encoding: 'CP1250', confidence: 1 };
+      })
+    }
+  };
+});
 
-jest.unstable_mockModule('glob', () => ({
-  glob: jest.fn()
-}));
+jest.unstable_mockModule('glob', () => {
+  return {
+    glob: jest.fn()
+  };
+});
 
-jest.unstable_mockModule('inquirer', () => ({
-  default: {
-    prompt: jest.fn()
-  }
-}));
+jest.unstable_mockModule('inquirer', () => {
+  return {
+    default: {
+      prompt: jest.fn()
+    }
+  };
+});
 
-jest.unstable_mockModule('fs', () => ({
-  readFile: jest.fn(),
-  writeFile: jest.fn()
-}));
+jest.unstable_mockModule('fs/promises', () => {
+  return {
+    readFile: jest.fn(),
+    writeFile: jest.fn()
+  };
+});
 
 // Mock console
 global.console = {
@@ -46,7 +61,7 @@ global.console = {
 const { getFiles, promptUser, processFile, run } = await import('../app.js');
 const { glob } = await import('glob');
 const inquirer = (await import('inquirer')).default;
-const { readFile, writeFile } = await import('fs');
+const { readFile, writeFile } = await import('fs/promises');
 const ora = (await import('ora')).default;
 
 describe('neconv application', () => {
@@ -98,75 +113,68 @@ describe('neconv application', () => {
     it('should process a file successfully', async () => {
       const originalContent = Buffer.from([0xB9, 0xE6]); // CP1250 bytes
 
-      readFile.mockImplementation((filePath, callback) => {
-        expect(filePath).toBe(file);
-        callback(null, originalContent);
-      });
+      readFile.mockResolvedValue(originalContent);
+      writeFile.mockResolvedValue();
 
-      writeFile.mockImplementation((filePath, data, callback) => {
-        expect(filePath).toBe(file);
-        expect(data).toBeDefined();
-        callback(null);
-      });
+      const result = await processFile(file);
 
-      await processFile(file);
-
-      expect(readFile).toHaveBeenCalledTimes(1);
+      expect(readFile).toHaveBeenCalledWith(file);
       expect(writeFile).toHaveBeenCalledTimes(1);
       expect(ora).toHaveBeenCalledWith({
-        text: `${path.basename(file)} - processing [CP1250]...`,
+        text: `${path.basename(file)} - processing...`,
         spinner: 'dots2'
       });
       expect(mockOra.start).toHaveBeenCalledTimes(1);
       expect(mockOra.succeed).toHaveBeenCalledWith(`${path.basename(file)} - DONE`);
       expect(mockOra.fail).not.toHaveBeenCalled();
       expect(mockOra.stop).toHaveBeenCalledTimes(1);
+      expect(result).toBeDefined();
     });
 
-    it('should handle readFile errors', async () => {
+    it('should handle readFile errors and return null without throwing', async () => {
       const readError = new Error('Cannot read file');
-      readFile.mockImplementation((filePath, callback) => {
-        callback(readError, null);
-      });
+      readFile.mockRejectedValue(readError);
 
-      await expect(processFile(file)).rejects.toBe(readError);
+      const result = await processFile(file);
 
+      expect(result).toBeNull();
       expect(writeFile).not.toHaveBeenCalled();
-      expect(ora).not.toHaveBeenCalled();
+      expect(mockOra.fail).toHaveBeenCalledWith(`${path.basename(file)} - failed`);
+      expect(mockOra.stop).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(`Error processing ${path.basename(file)}:`, readError);
     });
 
-    it('should handle writeFile errors', async () => {
+    it('should handle writeFile errors and return null without throwing', async () => {
       const originalContent = Buffer.from('some text');
       const writeError = new Error('Cannot write file');
 
-      readFile.mockImplementation((filePath, callback) => {
-        callback(null, originalContent);
-      });
+      readFile.mockResolvedValue(originalContent);
+      writeFile.mockRejectedValue(writeError);
 
-      writeFile.mockImplementation((filePath, data, callback) => {
-          callback(writeError);
-      });
+      const result = await processFile(file);
 
-      await processFile(file);
-
+      expect(result).toBeNull();
       expect(writeFile).toHaveBeenCalledTimes(1);
       expect(mockOra.fail).toHaveBeenCalledWith(`${path.basename(file)} - failed`);
       expect(mockOra.succeed).not.toHaveBeenCalled();
       expect(mockOra.stop).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith(writeError);
+      expect(console.error).toHaveBeenCalledWith(`Error processing ${path.basename(file)}:`, writeError);
     });
   });
 
   describe('run', () => {
-    it('should orchestrate the file conversion process', async () => {
+    it('should orchestrate the file conversion process and continue even if one file fails', async () => {
       const mockFiles = ['file1.txt', 'file2.srt'];
-      const userSelection = { files: ['file1.txt'] };
+      const userSelection = { files: ['file1.txt', 'file2.srt'] };
 
       glob.mockResolvedValue(mockFiles);
       inquirer.prompt.mockResolvedValue(userSelection);
-      const processFile = jest.fn().mockResolvedValue();
 
-      const { run } = await import('../app.js');
+      // file1 fails, file2 succeeds
+      readFile
+        .mockRejectedValueOnce(new Error('Cannot read file1'))
+        .mockResolvedValueOnce(Buffer.from('some text in file2'));
+      writeFile.mockResolvedValue();
 
       await run();
 
@@ -178,29 +186,27 @@ describe('neconv application', () => {
         pageSize: 30,
         choices: mockFiles
       });
+      expect(readFile).toHaveBeenCalledTimes(2);
+      expect(writeFile).toHaveBeenCalledTimes(1);
     });
 
     it('should not process files if none are selected', async () => {
       glob.mockResolvedValue(['file1.txt']);
-      inquirer.prompt.mockResolvedValue({ files: [] }); // No files selected
-
-      const processFile = jest.fn();
-      const { run } = await import('../app.js');
+      inquirer.prompt.mockResolvedValue({ files: [] });
 
       await run();
 
-      expect(processFile).not.toHaveBeenCalled();
-  });
+      expect(readFile).not.toHaveBeenCalled();
+      expect(writeFile).not.toHaveBeenCalled();
+    });
 
-  it('should log a message if no files are found', async () => {
-    glob.mockResolvedValue([]); // No files found
+    it('should log a message if no files are found', async () => {
+      glob.mockResolvedValue([]);
 
-    const { run } = await import('../app.js');
+      await run();
 
-    await run();
-
-    expect(console.log).toHaveBeenCalledWith('No .txt or .srt files found in the current directory.');
-    expect(inquirer.prompt).not.toHaveBeenCalled();
+      expect(console.log).toHaveBeenCalledWith('No .txt or .srt files found in the current directory.');
+      expect(inquirer.prompt).not.toHaveBeenCalled();
     });
   });
 });
