@@ -5,42 +5,42 @@ import path from 'path';
 process.env.NODE_ENV = 'test';
 
 const mockOra = {
-    start: jest.fn().mockReturnThis(),
-    succeed: jest.fn().mockReturnThis(),
-    fail: jest.fn().mockReturnThis(),
-    stop: jest.fn().mockReturnThis(),
+  start: jest.fn().mockReturnThis(),
+  succeed: jest.fn().mockReturnThis(),
+  fail: jest.fn().mockReturnThis(),
+  stop: jest.fn().mockReturnThis()
 };
 
 jest.unstable_mockModule('ora', () => ({
-    default: jest.fn(() => mockOra),
+  default: jest.fn(() => mockOra)
 }));
 
 jest.unstable_mockModule('jschardet', () => ({
-    default: {
-        detect: jest.fn(() => ({ encoding: 'CP1250', confidence: 1 }))
-    }
+  default: {
+    detect: jest.fn(() => ({ encoding: 'CP1250', confidence: 1 }))
+  }
 }));
 
 jest.unstable_mockModule('glob', () => ({
-    glob: jest.fn(),
+  glob: jest.fn()
 }));
 
 jest.unstable_mockModule('inquirer', () => ({
-    default: {
-        prompt: jest.fn(),
-    },
+  default: {
+    prompt: jest.fn()
+  }
 }));
 
 jest.unstable_mockModule('fs', () => ({
-    readFile: jest.fn(),
-    writeFile: jest.fn(),
+  readFile: jest.fn(),
+  writeFile: jest.fn()
 }));
 
 // Mock console
 global.console = {
-    ...global.console,
-    log: jest.fn(),
-    error: jest.fn(),
+  ...global.console,
+  log: jest.fn(),
+  error: jest.fn()
 };
 
 const { getFiles, promptUser, processFile, run } = await import('../app.js');
@@ -50,157 +50,157 @@ const { readFile, writeFile } = await import('fs');
 const ora = (await import('ora')).default;
 
 describe('neconv application', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('getFiles', () => {
+    it('should call glob to find .txt and .srt files', async () => {
+      const mockFiles = ['sub1.srt', 'notes.txt'];
+      glob.mockResolvedValue(mockFiles);
+
+      const files = await getFiles();
+
+      expect(glob).toHaveBeenCalledWith('*.{txt,srt}', { nocase: true });
+      expect(files).toEqual(mockFiles);
     });
 
-    describe('getFiles', () => {
-        it('should call glob to find .txt and .srt files', async () => {
-            const mockFiles = ['sub1.srt', 'notes.txt'];
-            glob.mockResolvedValue(mockFiles);
+    it('should handle glob errors', async () => {
+      const error = new Error('glob error');
+      glob.mockRejectedValue(error);
 
-            const files = await getFiles();
+      await expect(getFiles()).rejects.toThrow('glob error');
+    });
+  });
 
-            expect(glob).toHaveBeenCalledWith('*.{txt,srt}', { nocase: true });
-            expect(files).toEqual(mockFiles);
-        });
+  describe('promptUser', () => {
+    it('should use inquirer to prompt the user', async () => {
+      const inputFiles = ['sub1.srt', 'notes.txt'];
+      const userSelection = { files: ['sub1.srt'] };
+      inquirer.prompt.mockResolvedValue(userSelection);
 
-        it('should handle glob errors', async () => {
-            const error = new Error('glob error');
-            glob.mockRejectedValue(error);
+      const answers = await promptUser(inputFiles);
 
-            await expect(getFiles()).rejects.toThrow('glob error');
-        });
+      expect(inquirer.prompt).toHaveBeenCalledWith({
+        type: 'checkbox',
+        name: 'files',
+        message: 'Select files to convert',
+        pageSize: 30,
+        choices: inputFiles
+      });
+      expect(answers).toEqual(userSelection);
+    });
+  });
+
+  describe('processFile', () => {
+    const file = 'test.srt';
+
+    it('should process a file successfully', async () => {
+      const originalContent = Buffer.from([0xB9, 0xE6]); // CP1250 bytes
+
+      readFile.mockImplementation((filePath, callback) => {
+        expect(filePath).toBe(file);
+        callback(null, originalContent);
+      });
+
+      writeFile.mockImplementation((filePath, data, callback) => {
+        expect(filePath).toBe(file);
+        expect(data).toBeDefined();
+        callback(null);
+      });
+
+      await processFile(file);
+
+      expect(readFile).toHaveBeenCalledTimes(1);
+      expect(writeFile).toHaveBeenCalledTimes(1);
+      expect(ora).toHaveBeenCalledWith({
+        text: `${path.basename(file)} - processing [CP1250]...`,
+        spinner: 'dots2'
+      });
+      expect(mockOra.start).toHaveBeenCalledTimes(1);
+      expect(mockOra.succeed).toHaveBeenCalledWith(`${path.basename(file)} - DONE`);
+      expect(mockOra.fail).not.toHaveBeenCalled();
+      expect(mockOra.stop).toHaveBeenCalledTimes(1);
     });
 
-    describe('promptUser', () => {
-        it('should use inquirer to prompt the user', async () => {
-            const inputFiles = ['sub1.srt', 'notes.txt'];
-            const userSelection = { files: ['sub1.srt'] };
-            inquirer.prompt.mockResolvedValue(userSelection);
+    it('should handle readFile errors', async () => {
+      const readError = new Error('Cannot read file');
+      readFile.mockImplementation((filePath, callback) => {
+        callback(readError, null);
+      });
 
-            const answers = await promptUser(inputFiles);
+      await expect(processFile(file)).rejects.toBe(readError);
 
-            expect(inquirer.prompt).toHaveBeenCalledWith({
-                type: 'checkbox',
-                name: 'files',
-                message: 'Select files to convert',
-                pageSize: 30,
-                choices: inputFiles,
-            });
-            expect(answers).toEqual(userSelection);
-        });
+      expect(writeFile).not.toHaveBeenCalled();
+      expect(ora).not.toHaveBeenCalled();
     });
 
-    describe('processFile', () => {
-        const file = 'test.srt';
+    it('should handle writeFile errors', async () => {
+      const originalContent = Buffer.from('some text');
+      const writeError = new Error('Cannot write file');
 
-        it('should process a file successfully', async () => {
-            const originalContent = Buffer.from([0xB9, 0xE6]); // CP1250 bytes
+      readFile.mockImplementation((filePath, callback) => {
+        callback(null, originalContent);
+      });
 
-            readFile.mockImplementation((filePath, callback) => {
-                expect(filePath).toBe(file);
-                callback(null, originalContent);
-            });
+      writeFile.mockImplementation((filePath, data, callback) => {
+          callback(writeError);
+      });
 
-            writeFile.mockImplementation((filePath, data, callback) => {
-                expect(filePath).toBe(file);
-                expect(data).toBeDefined();
-                callback(null);
-            });
+      await processFile(file);
 
-            await processFile(file);
+      expect(writeFile).toHaveBeenCalledTimes(1);
+      expect(mockOra.fail).toHaveBeenCalledWith(`${path.basename(file)} - failed`);
+      expect(mockOra.succeed).not.toHaveBeenCalled();
+      expect(mockOra.stop).toHaveBeenCalledTimes(1);
+      expect(console.error).toHaveBeenCalledWith(writeError);
+    });
+  });
 
-            expect(readFile).toHaveBeenCalledTimes(1);
-            expect(writeFile).toHaveBeenCalledTimes(1);
-            expect(ora).toHaveBeenCalledWith({
-                text: `${path.basename(file)} - processing [CP1250]...`,
-                spinner: 'dots2'
-            });
-            expect(mockOra.start).toHaveBeenCalledTimes(1);
-            expect(mockOra.succeed).toHaveBeenCalledWith(`${path.basename(file)} - DONE`);
-            expect(mockOra.fail).not.toHaveBeenCalled();
-            expect(mockOra.stop).toHaveBeenCalledTimes(1);
-        });
+  describe('run', () => {
+    it('should orchestrate the file conversion process', async () => {
+      const mockFiles = ['file1.txt', 'file2.srt'];
+      const userSelection = { files: ['file1.txt'] };
 
-        it('should handle readFile errors', async () => {
-            const readError = new Error('Cannot read file');
-            readFile.mockImplementation((filePath, callback) => {
-                callback(readError, null);
-            });
+      glob.mockResolvedValue(mockFiles);
+      inquirer.prompt.mockResolvedValue(userSelection);
+      const processFile = jest.fn().mockResolvedValue();
 
-            await expect(processFile(file)).rejects.toBe(readError);
+      const { run } = await import('../app.js');
 
-            expect(writeFile).not.toHaveBeenCalled();
-            expect(ora).not.toHaveBeenCalled();
-        });
+      await run();
 
-        it('should handle writeFile errors', async () => {
-            const originalContent = Buffer.from('some text');
-            const writeError = new Error('Cannot write file');
-
-            readFile.mockImplementation((filePath, callback) => {
-                callback(null, originalContent);
-            });
-
-            writeFile.mockImplementation((filePath, data, callback) => {
-                callback(writeError);
-            });
-
-            await processFile(file);
-
-            expect(writeFile).toHaveBeenCalledTimes(1);
-            expect(mockOra.fail).toHaveBeenCalledWith(`${path.basename(file)} - failed`);
-            expect(mockOra.succeed).not.toHaveBeenCalled();
-            expect(mockOra.stop).toHaveBeenCalledTimes(1);
-            expect(console.error).toHaveBeenCalledWith(writeError);
-        });
+      expect(glob).toHaveBeenCalledTimes(1);
+      expect(inquirer.prompt).toHaveBeenCalledWith({
+        type: 'checkbox',
+        name: 'files',
+        message: 'Select files to convert',
+        pageSize: 30,
+        choices: mockFiles
+      });
     });
 
-    describe('run', () => {
-        it('should orchestrate the file conversion process', async () => {
-            const mockFiles = ['file1.txt', 'file2.srt'];
-            const userSelection = { files: ['file1.txt'] };
+    it('should not process files if none are selected', async () => {
+      glob.mockResolvedValue(['file1.txt']);
+      inquirer.prompt.mockResolvedValue({ files: [] }); // No files selected
 
-            glob.mockResolvedValue(mockFiles);
-            inquirer.prompt.mockResolvedValue(userSelection);
-            const processFile = jest.fn().mockResolvedValue();
+      const processFile = jest.fn();
+      const { run } = await import('../app.js');
 
-            const { run } = await import('../app.js');
+      await run();
 
-            await run();
+      expect(processFile).not.toHaveBeenCalled();
+  });
 
-            expect(glob).toHaveBeenCalledTimes(1);
-            expect(inquirer.prompt).toHaveBeenCalledWith({
-                type: 'checkbox',
-                name: 'files',
-                message: 'Select files to convert',
-                pageSize: 30,
-                choices: mockFiles,
-            });
-        });
+  it('should log a message if no files are found', async () => {
+    glob.mockResolvedValue([]); // No files found
 
-        it('should not process files if none are selected', async () => {
-            glob.mockResolvedValue(['file1.txt']);
-            inquirer.prompt.mockResolvedValue({ files: [] }); // No files selected
+    const { run } = await import('../app.js');
 
-            const processFile = jest.fn();
-            const { run } = await import('../app.js');
+    await run();
 
-            await run();
-
-            expect(processFile).not.toHaveBeenCalled();
-        });
-
-        it('should log a message if no files are found', async () => {
-            glob.mockResolvedValue([]); // No files found
-
-            const { run } = await import('../app.js');
-
-            await run();
-
-            expect(console.log).toHaveBeenCalledWith('No .txt or .srt files found in the current directory.');
-            expect(inquirer.prompt).not.toHaveBeenCalled();
-        });
+    expect(console.log).toHaveBeenCalledWith('No .txt or .srt files found in the current directory.');
+    expect(inquirer.prompt).not.toHaveBeenCalled();
     });
+  });
 });
