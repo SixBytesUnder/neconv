@@ -17,7 +17,7 @@ This project is a command-line utility for converting the character encoding of 
 - **Dependencies:**
   - `inquirer`: For user prompts.
   - `glob`: For file searching.
-  - `encoding`, `iconv-lite`: For character encoding conversion.
+  - `iconv-lite`: For character encoding conversion.
   - `ora`: For loading spinners.
 - **Testing:**
   - **Framework:** Jest
