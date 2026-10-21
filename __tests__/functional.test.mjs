@@ -118,8 +118,8 @@ describe('Functional file conversions on disk', () => {
   });
 
   test('converts CP1250 encoded subtitles with Polish characters to clean UTF-8 on disk', async () => {
-    const testFile = path.join(tempDir, 'sub-cp1250.txt');
-    const content = 'Zażółć gęślą jaźń - ĄĆĘŁŃÓŚŹŻ ąćęłńóśźż';
+    const testFile = path.join(tempDir, 'sub-cp1250.srt');
+    const content = '1\r\n00:00:01,000 --> 00:00:02,000\r\nZażółć gęślą jaźń - ĄĆĘŁŃÓŚŹŻ ąćęłńóśźż\r\n';
     const cp1250Bytes = iconvlite.encode(content, 'cp1250');
 
     await writeFile(testFile, cp1250Bytes);
@@ -133,6 +133,48 @@ describe('Functional file conversions on disk', () => {
     const convertedBytes = await readFile(testFile);
     assert.equal(isUtf8(convertedBytes), true);
     assert.equal(convertedBytes.toString('utf8'), content);
+  });
+
+  test('converts CP1250 encoded MicroDVD .txt file to .srt on disk, keeping original .txt', async () => {
+    const txtFile = path.join(tempDir, 'sub-cp1250.txt');
+    const srtFile = path.join(tempDir, 'sub-cp1250.srt');
+    const txtContent = '{100}{200}/Zażółć gęślą jaźń|ĄĆĘŁŃÓŚŹŻ ąćęłńóśźż';
+    const cp1250Bytes = iconvlite.encode(txtContent, 'cp1250');
+
+    await writeFile(txtFile, cp1250Bytes);
+
+    const result = await processFile(txtFile);
+    assert.ok(result);
+
+    const srtBytes = await readFile(srtFile);
+    assert.equal(isUtf8(srtBytes), true);
+    assert.ok(srtBytes.toString('utf8').includes('<i>Zażółć gęślą jaźń</i>\r\nĄĆĘŁŃÓŚŹŻ ąćęłńóśźż'));
+
+    const txtAfter = await readFile(txtFile);
+    assert.deepEqual(txtAfter, cp1250Bytes);
+  });
+
+  test('correctly converts sample slice from real fixture Community MicroDVD .txt to .srt', async () => {
+    const sourceFixture = path.resolve(
+      'test_files',
+      'Community.S01E07.Introduction.to.Statistics.1080p.BluRay.DD5.1.x265-POIASD.txt'
+    );
+    const targetTxtFile = path.join(tempDir, 'community-sample.txt');
+    const targetSrtFile = path.join(tempDir, 'community-sample.srt');
+
+    const fullContent = await readFile(sourceFixture, 'utf8');
+    const sampleLines = fullContent.split(/\r?\n/).slice(0, 10).join('\r\n');
+    await writeFile(targetTxtFile, Buffer.from(sampleLines, 'utf8'));
+
+    const result = await processFile(targetTxtFile);
+    assert.ok(result);
+
+    const srtContent = await readFile(targetSrtFile, 'utf8');
+    assert.ok(srtContent.startsWith('1\r\n00:00:00,042 --> 00:00:04,171\r\nwww.napiprojekt.pl - nowa jakość napisów.\r\nNapisy zostały specjalnie dopasowane do Twojej wersji filmu.'));
+    assert.ok(srtContent.includes('2\r\n00:00:00,792 --> 00:00:04,129\r\nJak wiecie, wszyscy nauczyciele na Greendale\r\nsą zobowiązani przydzielić'));
+
+    const txtContentAfter = await readFile(targetTxtFile, 'utf8');
+    assert.equal(txtContentAfter, sampleLines);
   });
 
   test('converts ISO-8859-2 encoded subtitles to clean UTF-8 on disk', async () => {

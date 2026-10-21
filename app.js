@@ -15,6 +15,7 @@ import {
   loadBielikModel,
   repairBrokenLinesWithBielik
 } from './lmstudio.js';
+import { convertToSrt } from './subtitles.js';
 
 export const deps = {
   glob,
@@ -28,7 +29,8 @@ export const deps = {
   startServer,
   stopServer,
   loadBielikModel,
-  repairBrokenLinesWithBielik
+  repairBrokenLinesWithBielik,
+  convertToSrt
 };
 
 const CONFIDENCE_THRESHOLD = 0.8;
@@ -85,12 +87,17 @@ export function detectSourceEncoding (data) {
 }
 
 export async function processFile (file, lmContext = null) {
+  const isTxt = path.extname(file).toLowerCase() === '.txt';
+  const targetFile = isTxt
+    ? path.format({ ...path.parse(file), base: undefined, ext: '.srt' })
+    : file;
+
   const spinner = deps.ora({
     text: `${path.basename(file)} - processing...`,
     spinner: 'dots2'
   }).start();
 
-  const tempFile = `${file}.tmp.${Date.now()}`;
+  const tempFile = `${targetFile}.tmp.${Date.now()}`;
 
   try {
     const data = await deps.readFile(file);
@@ -134,13 +141,19 @@ export async function processFile (file, lmContext = null) {
       needsWrite = true;
     }
 
-    if (!needsWrite) {
+    if (isTxt) {
+      spinner.text = `${path.basename(file)} - transforming subtitles to SRT...`;
+      converted = deps.convertToSrt(converted);
+      needsWrite = true;
+    }
+
+    if (!needsWrite && !isTxt) {
       spinner.info(`${path.basename(file)} - already UTF-8 (skipped)`);
       return converted;
     }
 
     await deps.writeFile(tempFile, converted, 'utf8');
-    await deps.rename(tempFile, file);
+    await deps.rename(tempFile, targetFile);
 
     spinner.succeed(`${path.basename(file)} - DONE`);
     return converted;

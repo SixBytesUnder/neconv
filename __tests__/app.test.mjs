@@ -262,6 +262,29 @@ describe('neconv application', () => {
       assert.equal(result, 'Czysty tekst UTF-8');
     });
 
+    test('always converts and saves a .txt file as .srt even if already UTF-8', async () => {
+      const txtFile = 'movie.txt';
+      const microDvdContent = '{1}{100}Cześć świecie';
+      mock.method(deps, 'readFile', async () => {
+        return Buffer.from(microDvdContent, 'utf8');
+      });
+      const writeMock = mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      const renameMock = mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
+
+      const result = await processFile(txtFile);
+
+      assert.equal(writeMock.mock.callCount(), 1);
+      assert.equal(renameMock.mock.callCount(), 1);
+      assert.equal(renameMock.mock.calls[0].arguments[1], 'movie.srt');
+      assert.ok(result.includes('00:00:00,042 --> 00:00:04,171'));
+      assert.ok(result.includes('Cześć świecie'));
+      assert.equal(mockSpinner.succeed.mock.callCount(), 1);
+    });
+
     test('repairs broken characters using lmContext when lmContext is provided', async () => {
       const brokenContent = Buffer.from('pa\uFFFDskiego');
       mock.method(deps, 'readFile', async () => {
