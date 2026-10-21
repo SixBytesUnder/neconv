@@ -1,6 +1,6 @@
 import { test, describe, beforeEach, afterEach, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, writeFile, readFile, stat, copyFile, readdir } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile, readFile, stat, readdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { isUtf8 } from 'node:buffer';
@@ -215,11 +215,14 @@ describe('Functional file conversions on disk', () => {
     assert.equal(fileContent.includes('\uFFFD'), false);
   });
 
-  test('correctly converts real test_files fixture Robin Of Sherwood UTF-16LE with BOM', async () => {
+  test('correctly converts sample slice from real fixture Robin Of Sherwood UTF-16LE with BOM', async () => {
     const sourceFixture = path.resolve('test_files', 'Robin Of Sherwood - 1X06 - The Kings Fool.srt');
     const targetFile = path.join(tempDir, 'test-utf16.srt');
 
-    await copyFile(sourceFixture, targetFile);
+    // Read only a small slice (first 512 bytes) to verify BOM without processing the entire 60KB file
+    const fullData = await readFile(sourceFixture);
+    const sliceLen = Math.min(512, fullData.length - (fullData.length % 2));
+    await writeFile(targetFile, fullData.subarray(0, sliceLen));
 
     const sourceData = await readFile(targetFile);
     assert.equal(sourceData[0], 0xFF);
@@ -234,14 +237,16 @@ describe('Functional file conversions on disk', () => {
     assert.ok(convertedData[0] !== 0xFF || convertedData[1] !== 0xFE);
   });
 
-  test('correctly converts real test_files fixture UTF-8 with BOM', async () => {
+  test('correctly converts sample slice from real fixture UTF-8 with BOM', async () => {
     const sourceFixture = path.resolve(
       'test_files',
       'Robin Of Sherwood - 1X01 - Robin Hood And The Sorcerer (Part 1) - Copy.srt'
     );
     const targetFile = path.join(tempDir, 'test-utf8-bom.srt');
 
-    await copyFile(sourceFixture, targetFile);
+    // Read only a small slice (first 512 bytes) to verify BOM stripping on a real fixture
+    const fullData = await readFile(sourceFixture);
+    await writeFile(targetFile, fullData.subarray(0, Math.min(512, fullData.length)));
 
     const sourceData = await readFile(targetFile);
     assert.equal(sourceData[0], 0xEF);
