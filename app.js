@@ -8,6 +8,15 @@ import { isUtf8 } from 'node:buffer';
 import { readFile, writeFile, rename, unlink } from 'fs/promises';
 import { glob } from 'glob';
 import jschardet from 'jschardet';
+import {
+  isServerRunning,
+  startServer,
+  stopServer,
+  loadBielikModel,
+  extractBrokenWords,
+  fixBrokenWordsWithBielik,
+  applyWordReplacements
+} from './lmstudio.js';
 
 const CONFIDENCE_THRESHOLD = 0.8;
 const SUPPORTED_ENCODINGS = new Set(['CP1250', 'WINDOWS-1250', 'ISO-8859-2']);
@@ -42,7 +51,7 @@ export function detectSourceEncoding (data) {
   return 'CP1250';
 }
 
-export async function processFile (file) {
+export async function processFile (file, lmContext = null) {
   const spinner = ora({
     text: `${path.basename(file)} - processing...`,
     spinner: 'dots2'
@@ -54,14 +63,47 @@ export async function processFile (file) {
     const data = await readFile(file);
     const sourceEncoding = detectSourceEncoding(data);
 
+    let converted;
+    let needsWrite = false;
+
     if (sourceEncoding === 'UTF-8') {
-      spinner.info(`${path.basename(file)} - already UTF-8 (skipped)`);
-      return data.toString('utf8');
+      converted = data.toString('utf8');
+    } else {
+      spinner.text = `${path.basename(file)} - converting [${sourceEncoding} -> UTF-8]...`;
+      converted = iconvlite.decode(data, sourceEncoding);
+      needsWrite = true;
     }
 
-    spinner.text = `${path.basename(file)} - processing [${sourceEncoding}]...`;
+    if (converted.includes('\uFFFD')) {
+      spinner.text = `${path.basename(file)} - checking LM Studio server...`;
 
-    const converted = iconvlite.decode(data, sourceEncoding);
+      if (lmContext) {
+        await lmContext.ensureReady(spinner, file);
+      } else {
+        const isRunning = await isServerRunning();
+        if (!isRunning) {
+          spinner.text = `${path.basename(file)} - starting LM Studio server...`;
+          await startServer();
+        }
+        spinner.text = `${path.basename(file)} - loading Bielik model...`;
+        await loadBielikModel();
+      }
+
+      const brokenWords = extractBrokenWords(converted);
+      if (brokenWords.length > 0) {
+        spinner.text = `${path.basename(file)} - fixing ${brokenWords.length} broken words with Bielik...`;
+        const replacements = await fixBrokenWordsWithBielik(brokenWords, undefined, (done, total) => {
+          spinner.text = `${path.basename(file)} - Bielik repairing (${done}/${total} words)...`;
+        });
+        converted = applyWordReplacements(converted, replacements);
+        needsWrite = true;
+      }
+    }
+
+    if (!needsWrite) {
+      spinner.info(`${path.basename(file)} - already UTF-8 (skipped)`);
+      return converted;
+    }
 
     await writeFile(tempFile, converted, 'utf8');
     await rename(tempFile, file);
@@ -106,11 +148,43 @@ export async function run () {
     return;
   }
 
+  let lmStudioUsed = false;
+  const lmContext = {
+    async ensureReady (spinner, file) {
+      if (!lmStudioUsed) {
+        const isRunning = await isServerRunning();
+        if (!isRunning) {
+          if (spinner) {
+            spinner.text = `${path.basename(file)} - starting LM Studio server...`;
+          }
+          await startServer();
+        }
+        if (spinner) {
+          spinner.text = `${path.basename(file)} - loading Bielik model...`;
+        }
+        await loadBielikModel();
+        lmStudioUsed = true;
+      }
+    }
+  };
+
   let failures = 0;
-  for (const file of answers.files) {
-    const result = await processFile(file);
-    if (result === null) {
-      failures += 1;
+  try {
+    for (const file of answers.files) {
+      const result = await processFile(file, lmContext);
+      if (result === null) {
+        failures += 1;
+      }
+    }
+  } finally {
+    if (lmStudioUsed) {
+      const shutdownSpinner = ora('Shutting down LM Studio server...').start();
+      try {
+        await stopServer();
+        shutdownSpinner.succeed('LM Studio server shut down.');
+      } catch (err) {
+        shutdownSpinner.fail(`Failed to stop LM Studio server: ${err.message}`);
+      }
     }
   }
 

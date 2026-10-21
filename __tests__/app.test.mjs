@@ -54,6 +54,22 @@ jest.unstable_mockModule('fs/promises', () => {
   };
 });
 
+const mockLmStudio = {
+  isServerRunning: jest.fn().mockResolvedValue(true),
+  startServer: jest.fn().mockResolvedValue(true),
+  stopServer: jest.fn().mockResolvedValue(true),
+  loadBielikModel: jest.fn().mockResolvedValue(true),
+  extractBrokenWords: jest.fn().mockReturnValue([]),
+  fixBrokenWordsWithBielik: jest.fn().mockResolvedValue(new Map()),
+  applyWordReplacements: jest.fn((text) => {
+    return text;
+  })
+};
+
+jest.unstable_mockModule('../lmstudio.js', () => {
+  return mockLmStudio;
+});
+
 // Mock console
 global.console = {
   ...global.console,
@@ -165,7 +181,30 @@ describe('neconv application', () => {
       expect(result).toBeDefined();
     });
 
-    it('should skip writing if file is already UTF-8', async () => {
+    it('should repair broken characters with Bielik when file contains \\uFFFD', async () => {
+      const brokenContent = Buffer.from('pa\uFFFDskiego');
+      readFile.mockResolvedValue(brokenContent);
+      writeFile.mockResolvedValue();
+      rename.mockResolvedValue();
+
+      mockLmStudio.isServerRunning.mockResolvedValueOnce(false);
+      mockLmStudio.extractBrokenWords.mockReturnValueOnce(['pa\uFFFDskiego']);
+      mockLmStudio.fixBrokenWordsWithBielik.mockResolvedValueOnce(new Map([['pa\uFFFDskiego', 'pańskiego']]));
+      mockLmStudio.applyWordReplacements.mockReturnValueOnce('pańskiego');
+
+      const result = await processFile(file);
+
+      expect(mockLmStudio.startServer).toHaveBeenCalledTimes(1);
+      expect(mockLmStudio.loadBielikModel).toHaveBeenCalledTimes(1);
+      expect(mockLmStudio.extractBrokenWords).toHaveBeenCalledTimes(1);
+      expect(mockLmStudio.fixBrokenWordsWithBielik).toHaveBeenCalledWith(['pa\uFFFDskiego'], undefined, expect.any(Function));
+      expect(mockLmStudio.applyWordReplacements).toHaveBeenCalledTimes(1);
+      expect(writeFile).toHaveBeenCalledTimes(1);
+      expect(rename).toHaveBeenCalledTimes(1);
+      expect(result).toBe('pańskiego');
+    });
+
+    it('should skip writing if file is already UTF-8 and contains no broken chars', async () => {
       const utf8Content = Buffer.from('already utf8', 'utf8');
 
       readFile.mockResolvedValue(utf8Content);
@@ -244,6 +283,26 @@ describe('neconv application', () => {
       expect(rename).toHaveBeenCalledTimes(1);
       expect(process.exitCode).toBe(1);
       process.exitCode = undefined;
+    });
+
+    it('should shut down LM Studio server after processing files when LM Studio was used', async () => {
+      const mockFiles = ['broken.srt'];
+      glob.mockResolvedValue(mockFiles);
+      inquirer.prompt.mockResolvedValue({ files: mockFiles });
+
+      const brokenContent = Buffer.from('pa\uFFFDskiego');
+      readFile.mockResolvedValue(brokenContent);
+      writeFile.mockResolvedValue();
+      rename.mockResolvedValue();
+
+      mockLmStudio.isServerRunning.mockResolvedValueOnce(true);
+      mockLmStudio.extractBrokenWords.mockReturnValueOnce(['pa\uFFFDskiego']);
+      mockLmStudio.fixBrokenWordsWithBielik.mockResolvedValueOnce(new Map([['pa\uFFFDskiego', 'pańskiego']]));
+      mockLmStudio.applyWordReplacements.mockReturnValueOnce('pańskiego');
+
+      await run();
+
+      expect(mockLmStudio.stopServer).toHaveBeenCalledTimes(1);
     });
 
     it('should gracefully handle ExitPromptError when prompt is cancelled', async () => {
