@@ -13,13 +13,18 @@ import {
   startServer,
   stopServer,
   loadBielikModel,
-  extractBrokenWords,
-  fixBrokenWordsWithBielik,
-  applyWordReplacements
+  repairBrokenLinesWithBielik
 } from './lmstudio.js';
 
 const CONFIDENCE_THRESHOLD = 0.8;
-const SUPPORTED_ENCODINGS = new Set(['CP1250', 'WINDOWS-1250', 'ISO-8859-2']);
+const SUPPORTED_ENCODINGS = new Set([
+  'CP1250',
+  'WINDOWS-1250',
+  'ISO-8859-2',
+  'UTF-16LE',
+  'UTF-16BE',
+  'UTF-16'
+]);
 
 export async function getFiles () {
   return glob('*.{txt,srt}', { nocase: true, nodir: true });
@@ -36,10 +41,23 @@ export async function promptUser (files) {
 }
 
 export function detectSourceEncoding (data) {
+  // 1. Detect Byte Order Marks (BOM)
+  if (data.length >= 2 && data[0] === 0xFF && data[1] === 0xFE) {
+    return 'UTF-16LE';
+  }
+  if (data.length >= 2 && data[0] === 0xFE && data[1] === 0xFF) {
+    return 'UTF-16BE';
+  }
+  if (data.length >= 3 && data[0] === 0xEF && data[1] === 0xBB && data[2] === 0xBF) {
+    return 'UTF-8';
+  }
+
+  // 2. Check if already valid UTF-8
   if (isUtf8(data)) {
     return 'UTF-8';
   }
 
+  // 3. Fallback to charset detection
   const detected = jschardet.detect(data);
   if (detected && detected.encoding && detected.confidence >= CONFIDENCE_THRESHOLD) {
     const enc = detected.encoding.toUpperCase();
@@ -68,9 +86,14 @@ export async function processFile (file, lmContext = null) {
 
     if (sourceEncoding === 'UTF-8') {
       converted = data.toString('utf8');
+      // Strip UTF-8 BOM if present
+      if (converted.charCodeAt(0) === 0xFEFF) {
+        converted = converted.slice(1);
+        needsWrite = true;
+      }
     } else {
       spinner.text = `${path.basename(file)} - converting [${sourceEncoding} -> UTF-8]...`;
-      converted = iconvlite.decode(data, sourceEncoding);
+      converted = iconvlite.decode(data, sourceEncoding, { stripBOM: true });
       needsWrite = true;
     }
 
@@ -89,15 +112,11 @@ export async function processFile (file, lmContext = null) {
         await loadBielikModel();
       }
 
-      const brokenWords = extractBrokenWords(converted);
-      if (brokenWords.length > 0) {
-        spinner.text = `${path.basename(file)} - fixing ${brokenWords.length} broken words with Bielik...`;
-        const replacements = await fixBrokenWordsWithBielik(brokenWords, undefined, (done, total) => {
-          spinner.text = `${path.basename(file)} - Bielik repairing (${done}/${total} words)...`;
-        });
-        converted = applyWordReplacements(converted, replacements);
-        needsWrite = true;
-      }
+      spinner.text = `${path.basename(file)} - repairing broken lines with Bielik...`;
+      converted = await repairBrokenLinesWithBielik(converted, undefined, (done, total) => {
+        spinner.text = `${path.basename(file)} - Bielik repairing lines (${done}/${total})...`;
+      });
+      needsWrite = true;
     }
 
     if (!needsWrite) {

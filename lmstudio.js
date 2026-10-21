@@ -6,29 +6,29 @@ const execAsync = promisify(exec);
 const LM_STUDIO_URL = 'http://127.0.0.1:1234';
 const DEFAULT_MODEL_KEY = 'bielik-11b-v3.0-instruct';
 const DEFAULT_IDENTIFIER = 'bielik';
-const BATCH_SIZE = 25;
+const LINE_BATCH_SIZE = 15;
 
 export async function isServerRunning (baseUrl = LM_STUDIO_URL) {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => {
-      controller.abort();
-    }, 2000);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 2000);
 
+  try {
     const res = await fetch(`${baseUrl}/v1/models`, {
       signal: controller.signal
     });
-    clearTimeout(timeout);
     return res.ok;
   } catch {
     return false;
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
 export async function startServer () {
   await execAsync('lms server start');
 
-  // Wait for server to become responsive
   for (let i = 0; i < 15; i += 1) {
     if (await isServerRunning()) {
       return true;
@@ -68,57 +68,49 @@ export async function loadBielikModel (modelKey = DEFAULT_MODEL_KEY, identifier 
   return true;
 }
 
-export function extractBrokenWords (text) {
-  const wordRegex = /[a-zA-Z\u00C0-\u024F\uFFFD]*\uFFFD[a-zA-Z\u00C0-\u024F\uFFFD]*/g;
-  const matches = text.match(wordRegex) || [];
-  return [...new Set(matches)];
-}
+export async function repairBrokenLinesWithBielik (text, baseUrl = LM_STUDIO_URL, onProgress = null) {
+  const lines = text.split(/\r?\n/);
+  const brokenLineIndices = [];
 
-export function preserveCase (original, replacement) {
-  if (!original || !replacement) {
-    return replacement;
-  }
-  if (original === original.toUpperCase()) {
-    return replacement.toUpperCase();
-  }
-  if (original[0] === original[0].toUpperCase()) {
-    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-  }
-  return replacement.toLowerCase();
-}
-
-export async function fixBrokenWordsWithBielik (words, baseUrl = LM_STUDIO_URL, onProgress = null) {
-  if (!words || words.length === 0) {
-    return new Map();
+  for (let i = 0; i < lines.length; i += 1) {
+    if (lines[i].includes('\uFFFD')) {
+      brokenLineIndices.push(i);
+    }
   }
 
-  const replacements = new Map();
+  if (brokenLineIndices.length === 0) {
+    return text;
+  }
 
-  for (let i = 0; i < words.length; i += BATCH_SIZE) {
-    const batch = words.slice(i, i + BATCH_SIZE);
+  const repairedLines = [...lines];
+
+  for (let i = 0; i < brokenLineIndices.length; i += LINE_BATCH_SIZE) {
+    const batchIndices = brokenLineIndices.slice(i, i + LINE_BATCH_SIZE);
+    const batchLines = batchIndices.map((idx) => {
+      return lines[idx];
+    });
 
     if (onProgress) {
-      onProgress(i + batch.length, words.length);
+      onProgress(i + batchLines.length, brokenLineIndices.length);
     }
 
-    const prompt = `Napraw uszkodzone słowa w języku polskim.
-W każdym słowie znak  oznacza dokładnie jedną brakującą polską literę: ą, ć, ę, ł, ń, ó, ś, ź, ż (lub wielką: Ą, Ć, Ę, Ł, Ń, Ó, Ś, Ź, Ż).
-Pozostałe litery w słowie muszą pozostać bez zmian! Zachowaj wielkość liter.
+    const formattedInput = batchLines.map((l, idx) => {
+      return `${idx + 1}. ${l}`;
+    }).join('\n');
 
-Przykłady:
-"Wyazi" -> "Wyłazić"
-"onierze" -> "żołnierze"
-"paskiego" -> "pańskiego"
-"zosta" -> "zostań"
-"Chod" -> "Chodź"
+    const prompt = `Jesteś ekspertem języka polskiego i edytorem napisów filmowych.
+W poniższych linijkach napisów polskie znaki diakrytyczne (ą, ć, ę, ł, ń, ó, ś, ź, ż) zostały uszkodzone i zastąpione znakiem \uFFFD.
+Napraw uszkodzone polskie litery w każdej linijce na podstawie kontekstu zdania.
 
-Słowa do naprawy:
-${JSON.stringify(batch, null, 2)}
+ZASADY:
+1. Zwróć DOKŁADNIE ${batchLines.length} ponumerowanych linijek (od 1 do ${batchLines.length}).
+2. Zachowaj oryginalną interpunkcję, ukośniki /, myślniki -, wielkość liter i formatowanie.
+3. Nie zmieniaj ani nie parafrazuj słów - jedynie uzupełnij brakujące polskie litery.
 
-Zwróć WYŁĄCZNIE poprawny obiekt JSON, w którym kluczem jest uszkodzone słowo, a wartością poprawne polskie słowo:
-{
-  "uszkodzone": "poprawne"
-}`;
+Linijki do naprawy:
+${formattedInput}
+
+Poprawione linijki:`;
 
     try {
       const res = await fetch(`${baseUrl}/v1/chat/completions`, {
@@ -129,7 +121,7 @@ Zwróć WYŁĄCZNIE poprawny obiekt JSON, w którym kluczem jest uszkodzone sło
           messages: [
             {
               role: 'system',
-              content: 'Zwracasz wyłącznie poprawny obiekt JSON {"uszkodzone": "poprawne"}. Zero markdown, zero tekstu dodatkowego.'
+              content: 'Zwracasz wyłącznie ponumerowaną listę poprawionych linijek (1. ... do N. ...). Zero komentarzy, zero dodatkowego tekstu.'
             },
             {
               role: 'user',
@@ -146,26 +138,22 @@ Zwróć WYŁĄCZNIE poprawny obiekt JSON, w którym kluczem jest uszkodzone sło
 
       const data = await res.json();
       const raw = data.choices[0].message.content.trim();
-      const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
-      const mapping = JSON.parse(cleaned);
 
-      for (const [broken, fixed] of Object.entries(mapping)) {
-        if (typeof fixed === 'string' && fixed.trim()) {
-          replacements.set(broken, preserveCase(broken, fixed.trim()));
+      const lineRegex = /^\s*(\d+)[.)]\s*(.*)$/gm;
+      let match;
+      while ((match = lineRegex.exec(raw)) !== null) {
+        const itemNum = parseInt(match[1], 10) - 1;
+        const fixedLine = match[2].trim();
+        if (itemNum >= 0 && itemNum < batchIndices.length && fixedLine) {
+          const fileLineIndex = batchIndices[itemNum];
+          repairedLines[fileLineIndex] = fixedLine;
         }
       }
     } catch (err) {
-      console.error('Bielik batch processing warning:', err.message);
+      console.error('Bielik batch line processing warning:', err.message);
     }
   }
 
-  return replacements;
-}
-
-export function applyWordReplacements (text, replacements) {
-  let updated = text;
-  for (const [broken, fixed] of replacements.entries()) {
-    updated = updated.replaceAll(broken, fixed);
-  }
-  return updated;
+  const isCrlf = text.includes('\r\n');
+  return repairedLines.join(isCrlf ? '\r\n' : '\n');
 }

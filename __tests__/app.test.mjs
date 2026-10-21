@@ -59,10 +59,8 @@ const mockLmStudio = {
   startServer: jest.fn().mockResolvedValue(true),
   stopServer: jest.fn().mockResolvedValue(true),
   loadBielikModel: jest.fn().mockResolvedValue(true),
-  extractBrokenWords: jest.fn().mockReturnValue([]),
-  fixBrokenWordsWithBielik: jest.fn().mockResolvedValue(new Map()),
-  applyWordReplacements: jest.fn((text) => {
-    return text;
+  repairBrokenLinesWithBielik: jest.fn((text) => {
+    return text.replaceAll('\uFFFD', 'ń');
   })
 };
 
@@ -128,6 +126,21 @@ describe('neconv application', () => {
   });
 
   describe('detectSourceEncoding', () => {
+    it('should detect UTF-16LE from BOM', () => {
+      const buffer = Buffer.from([0xFF, 0xFE, 0x31, 0x00]);
+      expect(detectSourceEncoding(buffer)).toBe('UTF-16LE');
+    });
+
+    it('should detect UTF-16BE from BOM', () => {
+      const buffer = Buffer.from([0xFE, 0xFF, 0x00, 0x31]);
+      expect(detectSourceEncoding(buffer)).toBe('UTF-16BE');
+    });
+
+    it('should detect UTF-8 from BOM', () => {
+      const buffer = Buffer.from([0xEF, 0xBB, 0xBF, 0x31]);
+      expect(detectSourceEncoding(buffer)).toBe('UTF-8');
+    });
+
     it('should return UTF-8 for valid UTF-8 buffers', () => {
       const utf8Buffer = Buffer.from('Zażółć gęślą jaźń', 'utf8');
       expect(detectSourceEncoding(utf8Buffer)).toBe('UTF-8');
@@ -181,6 +194,21 @@ describe('neconv application', () => {
       expect(result).toBeDefined();
     });
 
+    it('should process and convert a UTF-16LE file with BOM to UTF-8', async () => {
+      const utf16leContent = Buffer.from([0xFF, 0xFE, 0x31, 0x00, 0x0D, 0x00, 0x0A, 0x00]);
+      readFile.mockResolvedValue(utf16leContent);
+      writeFile.mockResolvedValue();
+      rename.mockResolvedValue();
+
+      const result = await processFile(file);
+
+      expect(readFile).toHaveBeenCalledWith(file);
+      expect(writeFile).toHaveBeenCalledWith(expect.stringContaining(file), '1\r\n', 'utf8');
+      expect(rename).toHaveBeenCalledTimes(1);
+      expect(mockOra.succeed).toHaveBeenCalledWith(`${path.basename(file)} - DONE`);
+      expect(result).toBe('1\r\n');
+    });
+
     it('should repair broken characters with Bielik when file contains \\uFFFD', async () => {
       const brokenContent = Buffer.from('pa\uFFFDskiego');
       readFile.mockResolvedValue(brokenContent);
@@ -188,17 +216,13 @@ describe('neconv application', () => {
       rename.mockResolvedValue();
 
       mockLmStudio.isServerRunning.mockResolvedValueOnce(false);
-      mockLmStudio.extractBrokenWords.mockReturnValueOnce(['pa\uFFFDskiego']);
-      mockLmStudio.fixBrokenWordsWithBielik.mockResolvedValueOnce(new Map([['pa\uFFFDskiego', 'pańskiego']]));
-      mockLmStudio.applyWordReplacements.mockReturnValueOnce('pańskiego');
+      mockLmStudio.repairBrokenLinesWithBielik.mockResolvedValueOnce('pańskiego');
 
       const result = await processFile(file);
 
       expect(mockLmStudio.startServer).toHaveBeenCalledTimes(1);
       expect(mockLmStudio.loadBielikModel).toHaveBeenCalledTimes(1);
-      expect(mockLmStudio.extractBrokenWords).toHaveBeenCalledTimes(1);
-      expect(mockLmStudio.fixBrokenWordsWithBielik).toHaveBeenCalledWith(['pa\uFFFDskiego'], undefined, expect.any(Function));
-      expect(mockLmStudio.applyWordReplacements).toHaveBeenCalledTimes(1);
+      expect(mockLmStudio.repairBrokenLinesWithBielik).toHaveBeenCalledWith('pa\uFFFDskiego', undefined, expect.any(Function));
       expect(writeFile).toHaveBeenCalledTimes(1);
       expect(rename).toHaveBeenCalledTimes(1);
       expect(result).toBe('pańskiego');
@@ -296,9 +320,7 @@ describe('neconv application', () => {
       rename.mockResolvedValue();
 
       mockLmStudio.isServerRunning.mockResolvedValueOnce(true);
-      mockLmStudio.extractBrokenWords.mockReturnValueOnce(['pa\uFFFDskiego']);
-      mockLmStudio.fixBrokenWordsWithBielik.mockResolvedValueOnce(new Map([['pa\uFFFDskiego', 'pańskiego']]));
-      mockLmStudio.applyWordReplacements.mockReturnValueOnce('pańskiego');
+      mockLmStudio.repairBrokenLinesWithBielik.mockResolvedValueOnce('pańskiego');
 
       await run();
 
