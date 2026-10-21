@@ -33,3 +33,7 @@ This project is a command-line utility for converting the character encoding of 
 1.  Run the application using the `neconv` command in your terminal.
 2.  Select the files you want to convert from the list.
 3.  The selected files will be converted in place.
+
+### Workflow Guidelines
+
+- Whenever a task or feature is completed, automatically bump the script version (in `package.json` and `package-lock.json`) and commit all changes to git with a clear, descriptive message.
