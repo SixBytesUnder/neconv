@@ -5,7 +5,8 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
     "lint": "eslint ."
   },
   "author": "SixBytesUnder",
@@ -25,13 +26,7 @@
     "ora": "^9.4.1"
   },
   "devDependencies": {
-    "@babel/core": "^8.0.7",
-    "@babel/preset-env": "^8.0.7",
-    "@jest/globals": "^30.5.2",
-    "@types/jest": "^30.0.0",
-    "babel-jest": "^30.5.2",
     "eslint": "^9.0.0",
-    "jest": "^30.5.2",
     "neostandard": "^0.14.1"
   }
 }

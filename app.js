@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+import { fileURLToPath } from 'node:url';
 import inquirer from 'inquirer';
 import iconvlite from 'iconv-lite';
 import path from 'path';
@@ -16,6 +16,21 @@ import {
   repairBrokenLinesWithBielik
 } from './lmstudio.js';
 
+export const deps = {
+  glob,
+  inquirer,
+  ora,
+  readFile,
+  writeFile,
+  rename,
+  unlink,
+  isServerRunning,
+  startServer,
+  stopServer,
+  loadBielikModel,
+  repairBrokenLinesWithBielik
+};
+
 const CONFIDENCE_THRESHOLD = 0.8;
 const SUPPORTED_ENCODINGS = new Set([
   'CP1250',
@@ -27,11 +42,11 @@ const SUPPORTED_ENCODINGS = new Set([
 ]);
 
 export async function getFiles () {
-  return glob('*.{txt,srt}', { nocase: true, nodir: true });
+  return deps.glob('*.{txt,srt}', { nocase: true, nodir: true });
 }
 
 export async function promptUser (files) {
-  return inquirer.prompt({
+  return deps.inquirer.prompt({
     type: 'checkbox',
     name: 'files',
     message: 'Select files to convert',
@@ -70,7 +85,7 @@ export function detectSourceEncoding (data) {
 }
 
 export async function processFile (file, lmContext = null) {
-  const spinner = ora({
+  const spinner = deps.ora({
     text: `${path.basename(file)} - processing...`,
     spinner: 'dots2'
   }).start();
@@ -78,7 +93,7 @@ export async function processFile (file, lmContext = null) {
   const tempFile = `${file}.tmp.${Date.now()}`;
 
   try {
-    const data = await readFile(file);
+    const data = await deps.readFile(file);
     const sourceEncoding = detectSourceEncoding(data);
 
     let converted;
@@ -103,17 +118,17 @@ export async function processFile (file, lmContext = null) {
       if (lmContext) {
         await lmContext.ensureReady(spinner, file);
       } else {
-        const isRunning = await isServerRunning();
+        const isRunning = await deps.isServerRunning();
         if (!isRunning) {
           spinner.text = `${path.basename(file)} - starting LM Studio server...`;
-          await startServer();
+          await deps.startServer();
         }
         spinner.text = `${path.basename(file)} - loading Bielik model...`;
-        await loadBielikModel();
+        await deps.loadBielikModel();
       }
 
       spinner.text = `${path.basename(file)} - repairing broken lines with Bielik...`;
-      converted = await repairBrokenLinesWithBielik(converted, undefined, (done, total) => {
+      converted = await deps.repairBrokenLinesWithBielik(converted, undefined, (done, total) => {
         spinner.text = `${path.basename(file)} - Bielik repairing lines (${done}/${total})...`;
       });
       needsWrite = true;
@@ -124,14 +139,14 @@ export async function processFile (file, lmContext = null) {
       return converted;
     }
 
-    await writeFile(tempFile, converted, 'utf8');
-    await rename(tempFile, file);
+    await deps.writeFile(tempFile, converted, 'utf8');
+    await deps.rename(tempFile, file);
 
     spinner.succeed(`${path.basename(file)} - DONE`);
     return converted;
   } catch (error) {
     try {
-      await unlink(tempFile);
+      await deps.unlink(tempFile);
     } catch {
       // Ignore cleanup error if tempFile was never created
     }
@@ -171,17 +186,17 @@ export async function run () {
   const lmContext = {
     async ensureReady (spinner, file) {
       if (!lmStudioUsed) {
-        const isRunning = await isServerRunning();
+        const isRunning = await deps.isServerRunning();
         if (!isRunning) {
           if (spinner) {
             spinner.text = `${path.basename(file)} - starting LM Studio server...`;
           }
-          await startServer();
+          await deps.startServer();
         }
         if (spinner) {
           spinner.text = `${path.basename(file)} - loading Bielik model...`;
         }
-        await loadBielikModel();
+        await deps.loadBielikModel();
         lmStudioUsed = true;
       }
     }
@@ -197,9 +212,9 @@ export async function run () {
     }
   } finally {
     if (lmStudioUsed) {
-      const shutdownSpinner = ora('Shutting down LM Studio server...').start();
+      const shutdownSpinner = deps.ora('Shutting down LM Studio server...').start();
       try {
-        await stopServer();
+        await deps.stopServer();
         shutdownSpinner.succeed('LM Studio server shut down.');
       } catch (err) {
         shutdownSpinner.fail(`Failed to stop LM Studio server: ${err.message}`);
@@ -212,7 +227,9 @@ export async function run () {
   }
 }
 
-if (process.env.NODE_ENV !== 'test') {
+const isMain = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
+
+if (isMain && process.env.NODE_ENV !== 'test') {
   run().catch((error) => {
     console.error('An unexpected error occurred:', error);
     process.exit(1);

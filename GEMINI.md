@@ -22,11 +22,11 @@ This project is a command-line utility for converting the character encoding of 
   - `iconv-lite`: For character encoding conversion.
   - `ora`: For loading spinners.
 - **Testing:**
-  - **Framework:** Jest
-  - **Command:** `npm test`
+  - **Framework:** Node.js Built-in Test Runner (`node:test`, `node:assert`)
+  - **Command:** `npm test` (or `npm run test:coverage`)
 - **Linting:**
   - **Linter:** ESLint
-  - **Configuration:** `eslint-config-airbnb-base`
+  - **Configuration:** `neostandard`
 
 ### How to Use
 

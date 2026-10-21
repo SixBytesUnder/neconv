@@ -6,7 +6,7 @@ export default [
   },
   ...neostandard({
     semi: true, // Overrides Standard's default no-semi rule
-    env: ['jest', 'node']
+    env: ['node']
   }),
   {
     rules: {

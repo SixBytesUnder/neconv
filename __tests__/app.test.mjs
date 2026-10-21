@@ -1,362 +1,592 @@
-import { jest } from '@jest/globals';
-import path from 'path';
-
-// Set the environment to test
-process.env.NODE_ENV = 'test';
-
-const mockOra = {
-  start: jest.fn().mockReturnThis(),
-  succeed: jest.fn().mockReturnThis(),
-  fail: jest.fn().mockReturnThis(),
-  stop: jest.fn().mockReturnThis(),
-  info: jest.fn().mockReturnThis(),
-  text: ''
-};
-
-jest.unstable_mockModule('ora', () => {
-  return {
-    default: jest.fn(() => {
-      return mockOra;
-    })
-  };
-});
-
-jest.unstable_mockModule('jschardet', () => {
-  return {
-    default: {
-      detect: jest.fn(() => {
-        return { encoding: 'CP1250', confidence: 1 };
-      })
-    }
-  };
-});
-
-jest.unstable_mockModule('glob', () => {
-  return {
-    glob: jest.fn()
-  };
-});
-
-jest.unstable_mockModule('inquirer', () => {
-  return {
-    default: {
-      prompt: jest.fn()
-    }
-  };
-});
-
-jest.unstable_mockModule('fs/promises', () => {
-  return {
-    readFile: jest.fn(),
-    writeFile: jest.fn(),
-    rename: jest.fn(),
-    unlink: jest.fn()
-  };
-});
-
-const mockLmStudio = {
-  isServerRunning: jest.fn().mockResolvedValue(true),
-  startServer: jest.fn().mockResolvedValue(true),
-  stopServer: jest.fn().mockResolvedValue(true),
-  loadBielikModel: jest.fn().mockResolvedValue(true),
-  repairBrokenLinesWithBielik: jest.fn((text) => {
-    return text.replaceAll('\uFFFD', 'ń');
-  })
-};
-
-jest.unstable_mockModule('../lmstudio.js', () => {
-  return mockLmStudio;
-});
-
-// Mock console
-global.console = {
-  ...global.console,
-  log: jest.fn(),
-  error: jest.fn()
-};
-
-const { getFiles, promptUser, detectSourceEncoding, processFile, run } = await import('../app.js');
-const { glob } = await import('glob');
-const jschardet = (await import('jschardet')).default;
-const inquirer = (await import('inquirer')).default;
-const { readFile, writeFile, rename, unlink } = await import('fs/promises');
-const ora = (await import('ora')).default;
+import { test, describe, beforeEach, afterEach, mock } from 'node:test';
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import jschardet from 'jschardet';
+import iconvlite from 'iconv-lite';
+import {
+  getFiles,
+  promptUser,
+  detectSourceEncoding,
+  processFile,
+  run,
+  deps
+} from '../app.js';
 
 describe('neconv application', () => {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+  let mockSpinner;
+
+  beforeEach(() => {
+    mock.restoreAll();
+    mockSpinner = {
+      text: '',
+      start: () => {
+        return mockSpinner;
+      },
+      succeed: mock.fn(),
+      fail: mock.fn(),
+      stop: mock.fn(),
+      info: mock.fn()
+    };
+    mock.method(deps, 'ora', () => {
+      return mockSpinner;
+    });
+  });
+
   afterEach(() => {
-    jest.clearAllMocks();
+    console.log = originalConsoleLog;
+    console.error = originalConsoleError;
+    mock.restoreAll();
+    process.exitCode = undefined;
   });
 
   describe('getFiles', () => {
-    it('should call glob to find .txt and .srt files', async () => {
+    test('calls glob to find .txt and .srt files', async () => {
       const mockFiles = ['sub1.srt', 'notes.txt'];
-      glob.mockResolvedValue(mockFiles);
+      const globMock = mock.method(deps, 'glob', async () => {
+        return mockFiles;
+      });
 
       const files = await getFiles();
 
-      expect(glob).toHaveBeenCalledWith('*.{txt,srt}', { nocase: true, nodir: true });
-      expect(files).toEqual(mockFiles);
+      assert.equal(globMock.mock.callCount(), 1);
+      assert.deepEqual(globMock.mock.calls[0].arguments, [
+        '*.{txt,srt}',
+        { nocase: true, nodir: true }
+      ]);
+      assert.deepEqual(files, mockFiles);
     });
 
-    it('should handle glob errors', async () => {
-      const error = new Error('glob error');
-      glob.mockRejectedValue(error);
+    test('propagates glob errors', async () => {
+      mock.method(deps, 'glob', async () => {
+        throw new Error('glob error');
+      });
 
-      await expect(getFiles()).rejects.toThrow('glob error');
+      await assert.rejects(
+        async () => {
+          return getFiles();
+        },
+        {
+          name: 'Error',
+          message: 'glob error'
+        }
+      );
     });
   });
 
   describe('promptUser', () => {
-    it('should use inquirer to prompt the user', async () => {
+    test('prompts the user with checkbox choices using inquirer', async () => {
       const inputFiles = ['sub1.srt', 'notes.txt'];
       const userSelection = { files: ['sub1.srt'] };
-      inquirer.prompt.mockResolvedValue(userSelection);
+      const promptMock = mock.method(deps.inquirer, 'prompt', async () => {
+        return userSelection;
+      });
 
       const answers = await promptUser(inputFiles);
 
-      expect(inquirer.prompt).toHaveBeenCalledWith({
+      assert.equal(promptMock.mock.callCount(), 1);
+      assert.deepEqual(promptMock.mock.calls[0].arguments[0], {
         type: 'checkbox',
         name: 'files',
         message: 'Select files to convert',
         pageSize: 30,
         choices: inputFiles
       });
-      expect(answers).toEqual(userSelection);
+      assert.deepEqual(answers, userSelection);
     });
   });
 
   describe('detectSourceEncoding', () => {
-    it('should detect UTF-16LE from BOM', () => {
+    test('detects UTF-16LE from BOM', () => {
       const buffer = Buffer.from([0xFF, 0xFE, 0x31, 0x00]);
-      expect(detectSourceEncoding(buffer)).toBe('UTF-16LE');
+      assert.equal(detectSourceEncoding(buffer), 'UTF-16LE');
     });
 
-    it('should detect UTF-16BE from BOM', () => {
+    test('detects UTF-16BE from BOM', () => {
       const buffer = Buffer.from([0xFE, 0xFF, 0x00, 0x31]);
-      expect(detectSourceEncoding(buffer)).toBe('UTF-16BE');
+      assert.equal(detectSourceEncoding(buffer), 'UTF-16BE');
     });
 
-    it('should detect UTF-8 from BOM', () => {
+    test('detects UTF-8 from BOM', () => {
       const buffer = Buffer.from([0xEF, 0xBB, 0xBF, 0x31]);
-      expect(detectSourceEncoding(buffer)).toBe('UTF-8');
+      assert.equal(detectSourceEncoding(buffer), 'UTF-8');
     });
 
-    it('should return UTF-8 for valid UTF-8 buffers', () => {
+    test('returns UTF-8 for valid UTF-8 buffers without BOM', () => {
       const utf8Buffer = Buffer.from('Zażółć gęślą jaźń', 'utf8');
-      expect(detectSourceEncoding(utf8Buffer)).toBe('UTF-8');
+      assert.equal(detectSourceEncoding(utf8Buffer), 'UTF-8');
     });
 
-    it('should return detected encoding when supported and high confidence', () => {
+    test('returns detected encoding when supported and high confidence', () => {
       const cp1250Buffer = Buffer.from([0xB9, 0xE6]);
-      jschardet.detect.mockReturnValueOnce({ encoding: 'ISO-8859-2', confidence: 0.95 });
+      mock.method(jschardet, 'detect', () => {
+        return { encoding: 'ISO-8859-2', confidence: 0.95 };
+      });
 
-      expect(detectSourceEncoding(cp1250Buffer)).toBe('ISO-8859-2');
+      assert.equal(detectSourceEncoding(cp1250Buffer), 'ISO-8859-2');
     });
 
-    it('should fallback to CP1250 when confidence is below threshold', () => {
+    test('falls back to CP1250 when confidence is below threshold', () => {
       const cp1250Buffer = Buffer.from([0xB9, 0xE6]);
-      jschardet.detect.mockReturnValueOnce({ encoding: 'iso8859-3', confidence: 0.1 });
+      mock.method(jschardet, 'detect', () => {
+        return { encoding: 'ISO-8859-2', confidence: 0.75 };
+      });
 
-      expect(detectSourceEncoding(cp1250Buffer)).toBe('CP1250');
+      assert.equal(detectSourceEncoding(cp1250Buffer), 'CP1250');
     });
 
-    it('should fallback to CP1250 when detected encoding is not in supported list', () => {
+    test('falls back to CP1250 when detected encoding is not supported', () => {
       const cp1250Buffer = Buffer.from([0xB9, 0xE6]);
-      jschardet.detect.mockReturnValueOnce({ encoding: 'KOI8-R', confidence: 0.99 });
+      mock.method(jschardet, 'detect', () => {
+        return { encoding: 'KOI8-R', confidence: 0.99 };
+      });
 
-      expect(detectSourceEncoding(cp1250Buffer)).toBe('CP1250');
+      assert.equal(detectSourceEncoding(cp1250Buffer), 'CP1250');
+    });
+
+    test('falls back to CP1250 when detected encoding does not exist in iconv-lite', () => {
+      const cp1250Buffer = Buffer.from([0xB9, 0xE6]);
+      mock.method(jschardet, 'detect', () => {
+        return { encoding: 'UTF-16LE', confidence: 0.95 };
+      });
+      mock.method(iconvlite, 'encodingExists', () => {
+        return false;
+      });
+
+      assert.equal(detectSourceEncoding(cp1250Buffer), 'CP1250');
+    });
+
+    test('falls back to CP1250 when jschardet returns null or empty', () => {
+      const nonUtf8Buffer = Buffer.from([0xB9, 0xE6]);
+      mock.method(jschardet, 'detect', () => {
+        return null;
+      });
+
+      assert.equal(detectSourceEncoding(nonUtf8Buffer), 'CP1250');
     });
   });
 
   describe('processFile', () => {
     const file = 'test.srt';
 
-    it('should process and atomically convert a CP1250 file', async () => {
-      const originalContent = Buffer.from([0xB9, 0xE6]); // CP1250 bytes
-
-      readFile.mockResolvedValue(originalContent);
-      writeFile.mockResolvedValue();
-      rename.mockResolvedValue();
-
-      const result = await processFile(file);
-
-      expect(readFile).toHaveBeenCalledWith(file);
-      expect(writeFile).toHaveBeenCalledTimes(1);
-      expect(rename).toHaveBeenCalledTimes(1);
-      expect(ora).toHaveBeenCalledWith({
-        text: `${path.basename(file)} - processing...`,
-        spinner: 'dots2'
+    test('processes and converts a CP1250 file to UTF-8', async () => {
+      const originalContent = iconvlite.encode('Zażółć', 'cp1250');
+      mock.method(deps, 'readFile', async () => {
+        return originalContent;
       });
-      expect(mockOra.start).toHaveBeenCalledTimes(1);
-      expect(mockOra.succeed).toHaveBeenCalledWith(`${path.basename(file)} - DONE`);
-      expect(mockOra.fail).not.toHaveBeenCalled();
-      expect(mockOra.stop).toHaveBeenCalledTimes(1);
-      expect(result).toBeDefined();
+      const writeMock = mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      const renameMock = mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
+
+      const result = await processFile(file);
+
+      assert.equal(writeMock.mock.callCount(), 1);
+      assert.equal(writeMock.mock.calls[0].arguments[1], 'Zażółć');
+      assert.equal(renameMock.mock.callCount(), 1);
+      assert.equal(mockSpinner.succeed.mock.callCount(), 1);
+      assert.equal(mockSpinner.succeed.mock.calls[0].arguments[0], `${path.basename(file)} - DONE`);
+      assert.equal(mockSpinner.stop.mock.callCount(), 1);
+      assert.equal(result, 'Zażółć');
     });
 
-    it('should process and convert a UTF-16LE file with BOM to UTF-8', async () => {
+    test('processes and strips BOM from a UTF-8 with BOM file', async () => {
+      const bom = Buffer.from([0xEF, 0xBB, 0xBF]);
+      const content = Buffer.from('Napisy', 'utf8');
+      const utf8WithBom = Buffer.concat([bom, content]);
+
+      mock.method(deps, 'readFile', async () => {
+        return utf8WithBom;
+      });
+      const writeMock = mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      const renameMock = mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
+
+      const result = await processFile(file);
+
+      assert.equal(writeMock.mock.callCount(), 1);
+      assert.equal(writeMock.mock.calls[0].arguments[1], 'Napisy');
+      assert.equal(renameMock.mock.callCount(), 1);
+      assert.equal(mockSpinner.succeed.mock.callCount(), 1);
+      assert.equal(result, 'Napisy');
+    });
+
+    test('processes and converts a UTF-16LE file with BOM to UTF-8', async () => {
       const utf16leContent = Buffer.from([0xFF, 0xFE, 0x31, 0x00, 0x0D, 0x00, 0x0A, 0x00]);
-      readFile.mockResolvedValue(utf16leContent);
-      writeFile.mockResolvedValue();
-      rename.mockResolvedValue();
+      mock.method(deps, 'readFile', async () => {
+        return utf16leContent;
+      });
+      const writeMock = mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      const renameMock = mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
 
       const result = await processFile(file);
 
-      expect(readFile).toHaveBeenCalledWith(file);
-      expect(writeFile).toHaveBeenCalledWith(expect.stringContaining(file), '1\r\n', 'utf8');
-      expect(rename).toHaveBeenCalledTimes(1);
-      expect(mockOra.succeed).toHaveBeenCalledWith(`${path.basename(file)} - DONE`);
-      expect(result).toBe('1\r\n');
+      assert.equal(writeMock.mock.callCount(), 1);
+      assert.equal(writeMock.mock.calls[0].arguments[1], '1\r\n');
+      assert.equal(renameMock.mock.callCount(), 1);
+      assert.equal(mockSpinner.succeed.mock.callCount(), 1);
+      assert.equal(result, '1\r\n');
     });
 
-    it('should repair broken characters with Bielik when file contains \\uFFFD', async () => {
+    test('skips writing if file is already valid UTF-8 without BOM and without broken chars', async () => {
+      const utf8Content = Buffer.from('Czysty tekst UTF-8', 'utf8');
+      mock.method(deps, 'readFile', async () => {
+        return utf8Content;
+      });
+      const writeMock = mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      const renameMock = mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
+
+      const result = await processFile(file);
+
+      assert.equal(writeMock.mock.callCount(), 0);
+      assert.equal(renameMock.mock.callCount(), 0);
+      assert.equal(mockSpinner.info.mock.callCount(), 1);
+      assert.equal(
+        mockSpinner.info.mock.calls[0].arguments[0],
+        `${path.basename(file)} - already UTF-8 (skipped)`
+      );
+      assert.equal(result, 'Czysty tekst UTF-8');
+    });
+
+    test('repairs broken characters using lmContext when lmContext is provided', async () => {
       const brokenContent = Buffer.from('pa\uFFFDskiego');
-      readFile.mockResolvedValue(brokenContent);
-      writeFile.mockResolvedValue();
-      rename.mockResolvedValue();
+      mock.method(deps, 'readFile', async () => {
+        return brokenContent;
+      });
+      mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
 
-      mockLmStudio.isServerRunning.mockResolvedValueOnce(false);
-      mockLmStudio.repairBrokenLinesWithBielik.mockResolvedValueOnce('pańskiego');
+      const ensureReadyMock = mock.fn(async () => {
+        return Promise.resolve();
+      });
+      const repairMock = mock.method(deps, 'repairBrokenLinesWithBielik', async () => {
+        return 'pańskiego';
+      });
+
+      const lmContext = { ensureReady: ensureReadyMock };
+      const result = await processFile(file, lmContext);
+
+      assert.equal(ensureReadyMock.mock.callCount(), 1);
+      assert.equal(repairMock.mock.callCount(), 1);
+      assert.equal(result, 'pańskiego');
+    });
+
+    test('repairs broken characters and starts LM Studio when lmContext is not provided and server is stopped', async () => {
+      const brokenContent = Buffer.from('pa\uFFFDskiego');
+      mock.method(deps, 'readFile', async () => {
+        return brokenContent;
+      });
+      mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
+
+      const isRunningMock = mock.method(deps, 'isServerRunning', async () => {
+        return false;
+      });
+      const startServerMock = mock.method(deps, 'startServer', async () => {
+        return true;
+      });
+      const loadModelMock = mock.method(deps, 'loadBielikModel', async () => {
+        return true;
+      });
+      const repairMock = mock.method(
+        deps,
+        'repairBrokenLinesWithBielik',
+        async (_text, _url, onProgress) => {
+          if (onProgress) {
+            onProgress(1, 1);
+          }
+          return 'pańskiego';
+        }
+      );
 
       const result = await processFile(file);
 
-      expect(mockLmStudio.startServer).toHaveBeenCalledTimes(1);
-      expect(mockLmStudio.loadBielikModel).toHaveBeenCalledTimes(1);
-      expect(mockLmStudio.repairBrokenLinesWithBielik).toHaveBeenCalledWith('pa\uFFFDskiego', undefined, expect.any(Function));
-      expect(writeFile).toHaveBeenCalledTimes(1);
-      expect(rename).toHaveBeenCalledTimes(1);
-      expect(result).toBe('pańskiego');
+      assert.equal(isRunningMock.mock.callCount(), 1);
+      assert.equal(startServerMock.mock.callCount(), 1);
+      assert.equal(loadModelMock.mock.callCount(), 1);
+      assert.equal(repairMock.mock.callCount(), 1);
+      assert.equal(result, 'pańskiego');
     });
 
-    it('should skip writing if file is already UTF-8 and contains no broken chars', async () => {
-      const utf8Content = Buffer.from('already utf8', 'utf8');
+    test('repairs broken characters without restarting server when server is already running', async () => {
+      const brokenContent = Buffer.from('pa\uFFFDskiego');
+      mock.method(deps, 'readFile', async () => {
+        return brokenContent;
+      });
+      mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
 
-      readFile.mockResolvedValue(utf8Content);
+      const isRunningMock = mock.method(deps, 'isServerRunning', async () => {
+        return true;
+      });
+      const startServerMock = mock.method(deps, 'startServer', async () => {
+        return true;
+      });
+      const loadModelMock = mock.method(deps, 'loadBielikModel', async () => {
+        return true;
+      });
+      mock.method(deps, 'repairBrokenLinesWithBielik', async () => {
+        return 'pańskiego';
+      });
 
       const result = await processFile(file);
 
-      expect(readFile).toHaveBeenCalledWith(file);
-      expect(writeFile).not.toHaveBeenCalled();
-      expect(rename).not.toHaveBeenCalled();
-      expect(mockOra.info).toHaveBeenCalledWith(`${path.basename(file)} - already UTF-8 (skipped)`);
-      expect(result).toBe('already utf8');
+      assert.equal(isRunningMock.mock.callCount(), 1);
+      assert.equal(startServerMock.mock.callCount(), 0);
+      assert.equal(loadModelMock.mock.callCount(), 1);
+      assert.equal(result, 'pańskiego');
     });
 
-    it('should handle readFile errors and return null without throwing', async () => {
+    test('handles readFile errors and returns null without throwing', async () => {
       const readError = new Error('Cannot read file');
-      readFile.mockRejectedValue(readError);
+      mock.method(deps, 'readFile', async () => {
+        throw readError;
+      });
+      mock.method(console, 'error', () => {});
 
       const result = await processFile(file);
 
-      expect(result).toBeNull();
-      expect(writeFile).not.toHaveBeenCalled();
-      expect(rename).not.toHaveBeenCalled();
-      expect(mockOra.fail).toHaveBeenCalledWith(`${path.basename(file)} - failed`);
-      expect(mockOra.stop).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith(`Error processing ${path.basename(file)}:`, readError);
+      assert.equal(result, null);
+      assert.equal(mockSpinner.fail.mock.callCount(), 1);
+      assert.equal(mockSpinner.fail.mock.calls[0].arguments[0], `${path.basename(file)} - failed`);
     });
 
-    it('should handle writeFile errors, clean up temp file, and return null without throwing', async () => {
-      const originalContent = Buffer.from([0xB9, 0xE6]);
-      const writeError = new Error('Cannot write file');
-
-      readFile.mockResolvedValue(originalContent);
-      writeFile.mockRejectedValue(writeError);
-      unlink.mockResolvedValue();
+    test('handles writeFile errors, cleans up temp file, and returns null', async () => {
+      mock.method(deps, 'readFile', async () => {
+        return Buffer.from([0xB9, 0xE6]);
+      });
+      mock.method(deps, 'writeFile', async () => {
+        throw new Error('Disk full');
+      });
+      const unlinkMock = mock.method(deps, 'unlink', async () => {
+        return Promise.resolve();
+      });
+      mock.method(console, 'error', () => {});
 
       const result = await processFile(file);
 
-      expect(result).toBeNull();
-      expect(writeFile).toHaveBeenCalledTimes(1);
-      expect(unlink).toHaveBeenCalledTimes(1);
-      expect(rename).not.toHaveBeenCalled();
-      expect(mockOra.fail).toHaveBeenCalledWith(`${path.basename(file)} - failed`);
-      expect(mockOra.succeed).not.toHaveBeenCalled();
-      expect(mockOra.stop).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith(`Error processing ${path.basename(file)}:`, writeError);
+      assert.equal(result, null);
+      assert.equal(unlinkMock.mock.callCount(), 1);
+      assert.equal(mockSpinner.fail.mock.callCount(), 1);
+    });
+
+    test('handles writeFile errors gracefully even when unlink fails', async () => {
+      mock.method(deps, 'readFile', async () => {
+        return Buffer.from([0xB9, 0xE6]);
+      });
+      mock.method(deps, 'writeFile', async () => {
+        throw new Error('Disk full');
+      });
+      mock.method(deps, 'unlink', async () => {
+        throw new Error('Unlink failed');
+      });
+      mock.method(console, 'error', () => {});
+
+      const result = await processFile(file);
+
+      assert.equal(result, null);
+      assert.equal(mockSpinner.fail.mock.callCount(), 1);
     });
   });
 
   describe('run', () => {
-    it('should orchestrate the file conversion process and continue even if one file fails', async () => {
-      const mockFiles = ['file1.txt', 'file2.srt'];
-      const userSelection = { files: ['file1.txt', 'file2.srt'] };
-
-      glob.mockResolvedValue(mockFiles);
-      inquirer.prompt.mockResolvedValue(userSelection);
-
-      // file1 fails, file2 succeeds (CP1250)
-      readFile
-        .mockRejectedValueOnce(new Error('Cannot read file1'))
-        .mockResolvedValueOnce(Buffer.from([0xB9, 0xE6]));
-      writeFile.mockResolvedValue();
-      rename.mockResolvedValue();
-
-      await run();
-
-      expect(glob).toHaveBeenCalledTimes(1);
-      expect(inquirer.prompt).toHaveBeenCalledWith({
-        type: 'checkbox',
-        name: 'files',
-        message: 'Select files to convert',
-        pageSize: 30,
-        choices: mockFiles
+    test('logs message when no files are found', async () => {
+      mock.method(deps, 'glob', async () => {
+        return [];
       });
-      expect(readFile).toHaveBeenCalledTimes(2);
-      expect(writeFile).toHaveBeenCalledTimes(1);
-      expect(rename).toHaveBeenCalledTimes(1);
-      expect(process.exitCode).toBe(1);
-      process.exitCode = undefined;
-    });
-
-    it('should shut down LM Studio server after processing files when LM Studio was used', async () => {
-      const mockFiles = ['broken.srt'];
-      glob.mockResolvedValue(mockFiles);
-      inquirer.prompt.mockResolvedValue({ files: mockFiles });
-
-      const brokenContent = Buffer.from('pa\uFFFDskiego');
-      readFile.mockResolvedValue(brokenContent);
-      writeFile.mockResolvedValue();
-      rename.mockResolvedValue();
-
-      mockLmStudio.isServerRunning.mockResolvedValueOnce(true);
-      mockLmStudio.repairBrokenLinesWithBielik.mockResolvedValueOnce('pańskiego');
+      let loggedMessage = '';
+      mock.method(console, 'log', (msg) => {
+        loggedMessage = msg;
+      });
 
       await run();
 
-      expect(mockLmStudio.stopServer).toHaveBeenCalledTimes(1);
+      assert.equal(loggedMessage, 'No .txt or .srt files found in the current directory.');
     });
 
-    it('should gracefully handle ExitPromptError when prompt is cancelled', async () => {
-      glob.mockResolvedValue(['file1.txt']);
+    test('gracefully handles ExitPromptError when prompt is cancelled', async () => {
+      mock.method(deps, 'glob', async () => {
+        return ['sub1.srt'];
+      });
       const cancelError = new Error('Cancelled');
       cancelError.name = 'ExitPromptError';
-      inquirer.prompt.mockRejectedValue(cancelError);
+      mock.method(deps.inquirer, 'prompt', async () => {
+        throw cancelError;
+      });
+      let loggedMessage = '';
+      mock.method(console, 'log', (msg) => {
+        loggedMessage = msg;
+      });
 
       await run();
 
-      expect(console.log).toHaveBeenCalledWith('Operation cancelled.');
-      expect(readFile).not.toHaveBeenCalled();
+      assert.equal(loggedMessage, 'Operation cancelled.');
     });
 
-    it('should not process files if none are selected', async () => {
-      glob.mockResolvedValue(['file1.txt']);
-      inquirer.prompt.mockResolvedValue({ files: [] });
+    test('rethrows unexpected prompt errors', async () => {
+      mock.method(deps, 'glob', async () => {
+        return ['sub1.srt'];
+      });
+      const unexpectedError = new Error('Inquirer crashed');
+      mock.method(deps.inquirer, 'prompt', async () => {
+        throw unexpectedError;
+      });
 
-      await run();
-
-      expect(console.log).toHaveBeenCalledWith('No files selected.');
-      expect(readFile).not.toHaveBeenCalled();
-      expect(writeFile).not.toHaveBeenCalled();
+      await assert.rejects(
+        async () => {
+          return run();
+        },
+        {
+          name: 'Error',
+          message: 'Inquirer crashed'
+        }
+      );
     });
 
-    it('should log a message if no files are found', async () => {
-      glob.mockResolvedValue([]);
+    test('logs message when user selects no files', async () => {
+      mock.method(deps, 'glob', async () => {
+        return ['sub1.srt'];
+      });
+      mock.method(deps.inquirer, 'prompt', async () => {
+        return { files: [] };
+      });
+      let loggedMessage = '';
+      mock.method(console, 'log', (msg) => {
+        loggedMessage = msg;
+      });
 
       await run();
 
-      expect(console.log).toHaveBeenCalledWith('No .txt or .srt files found in the current directory.');
-      expect(inquirer.prompt).not.toHaveBeenCalled();
+      assert.equal(loggedMessage, 'No files selected.');
+    });
+
+    test('processes selected files and sets exitCode to 1 if any file fails', async () => {
+      mock.method(deps, 'glob', async () => {
+        return ['file1.srt', 'file2.srt'];
+      });
+      mock.method(deps.inquirer, 'prompt', async () => {
+        return { files: ['file1.srt', 'file2.srt'] };
+      });
+
+      let call = 0;
+      mock.method(deps, 'readFile', async () => {
+        call += 1;
+        if (call === 1) {
+          throw new Error('Read error');
+        }
+        return Buffer.from('already utf8', 'utf8');
+      });
+      mock.method(console, 'error', () => {});
+
+      await run();
+
+      assert.equal(process.exitCode, 1);
+    });
+
+    test('manages LM Studio lifecycle and shuts down server after broken lines repair', async () => {
+      mock.method(deps, 'glob', async () => {
+        return ['broken.srt'];
+      });
+      mock.method(deps.inquirer, 'prompt', async () => {
+        return { files: ['broken.srt'] };
+      });
+      mock.method(deps, 'readFile', async () => {
+        return Buffer.from('pa\uFFFDskiego');
+      });
+      mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
+
+      const isRunningMock = mock.method(deps, 'isServerRunning', async () => {
+        return false;
+      });
+      const startServerMock = mock.method(deps, 'startServer', async () => {
+        return true;
+      });
+      const loadModelMock = mock.method(deps, 'loadBielikModel', async () => {
+        return true;
+      });
+      mock.method(deps, 'repairBrokenLinesWithBielik', async () => {
+        return 'pańskiego';
+      });
+      const stopServerMock = mock.method(deps, 'stopServer', async () => {
+        return true;
+      });
+
+      await run();
+
+      assert.equal(isRunningMock.mock.callCount(), 1);
+      assert.equal(startServerMock.mock.callCount(), 1);
+      assert.equal(loadModelMock.mock.callCount(), 1);
+      assert.equal(stopServerMock.mock.callCount(), 1);
+      assert.equal(mockSpinner.succeed.mock.callCount(), 2);
+    });
+
+    test('handles LM Studio shutdown failure in finally block gracefully', async () => {
+      mock.method(deps, 'glob', async () => {
+        return ['broken.srt'];
+      });
+      mock.method(deps.inquirer, 'prompt', async () => {
+        return { files: ['broken.srt'] };
+      });
+      mock.method(deps, 'readFile', async () => {
+        return Buffer.from('pa\uFFFDskiego');
+      });
+      mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
+
+      mock.method(deps, 'isServerRunning', async () => {
+        return true;
+      });
+      mock.method(deps, 'loadBielikModel', async () => {
+        return true;
+      });
+      mock.method(deps, 'repairBrokenLinesWithBielik', async () => {
+        return 'pańskiego';
+      });
+      mock.method(deps, 'stopServer', async () => {
+        throw new Error('Process kill failed');
+      });
+
+      await run();
+
+      assert.equal(mockSpinner.fail.mock.callCount(), 1);
+      assert.ok(
+        mockSpinner.fail.mock.calls[0].arguments[0].includes('Failed to stop LM Studio server')
+      );
     });
   });
 });

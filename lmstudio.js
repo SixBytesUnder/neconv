@@ -1,7 +1,14 @@
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 
-const execAsync = promisify(exec);
+export const deps = {
+  exec: promisify(exec),
+  delay: (ms) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+};
 
 const LM_STUDIO_URL = 'http://127.0.0.1:1234';
 const DEFAULT_MODEL_KEY = 'bielik-11b-v3.0-instruct';
@@ -27,22 +34,20 @@ export async function isServerRunning (baseUrl = LM_STUDIO_URL) {
 }
 
 export async function startServer () {
-  await execAsync('lms server start');
+  await deps.exec('lms server start');
 
   for (let i = 0; i < 15; i += 1) {
     if (await isServerRunning()) {
       return true;
     }
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000);
-    });
+    await deps.delay(1000);
   }
 
   throw new Error('LM Studio server failed to start within timeout.');
 }
 
 export async function stopServer () {
-  await execAsync('lms server stop');
+  await deps.exec('lms server stop');
 }
 
 export async function isModelLoaded (identifier = DEFAULT_IDENTIFIER, baseUrl = LM_STUDIO_URL) {
@@ -64,7 +69,7 @@ export async function loadBielikModel (modelKey = DEFAULT_MODEL_KEY, identifier 
   if (await isModelLoaded(identifier)) {
     return true;
   }
-  await execAsync(`lms load ${modelKey} -y --identifier ${identifier}`);
+  await deps.exec(`lms load ${modelKey} -y --identifier ${identifier}`);
   return true;
 }
 
