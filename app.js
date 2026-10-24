@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { fileURLToPath } from 'node:url';
+import { realpathSync } from 'node:fs';
 import inquirer from 'inquirer';
 import iconvlite from 'iconv-lite';
 import path from 'path';
@@ -240,7 +241,26 @@ export async function run () {
   }
 }
 
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
+export function checkIsMain (argvPath = process.argv[1], metaUrl = import.meta.url) {
+  if (!argvPath) {
+    return false;
+  }
+  try {
+    const realArgv = realpathSync(argvPath);
+    const realMeta = realpathSync(fileURLToPath(metaUrl));
+    return process.platform === 'win32'
+      ? realArgv.toLowerCase() === realMeta.toLowerCase()
+      : realArgv === realMeta;
+  } catch {
+    const resolvedArgv = path.resolve(argvPath);
+    const resolvedMeta = path.resolve(fileURLToPath(metaUrl));
+    return process.platform === 'win32'
+      ? resolvedArgv.toLowerCase() === resolvedMeta.toLowerCase()
+      : resolvedArgv === resolvedMeta;
+  }
+}
+
+const isMain = checkIsMain();
 
 if (isMain && process.env.NODE_ENV !== 'test') {
   run().catch((error) => {

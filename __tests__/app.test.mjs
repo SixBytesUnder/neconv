@@ -9,6 +9,7 @@ import {
   detectSourceEncoding,
   processFile,
   run,
+  checkIsMain,
   deps
 } from '../app.js';
 
@@ -610,6 +611,32 @@ describe('neconv application', () => {
       assert.ok(
         mockSpinner.fail.mock.calls[0].arguments[0].includes('Failed to stop LM Studio server')
       );
+    });
+  });
+
+  describe('checkIsMain', () => {
+    test('returns false when argvPath is falsy', () => {
+      assert.equal(checkIsMain(null, import.meta.url), false);
+      assert.equal(checkIsMain('', import.meta.url), false);
+    });
+
+    test('returns true when argvPath matches metaUrl directly', () => {
+      const currentFilePath = path.resolve('app.js');
+      const metaUrl = `file:///${currentFilePath.replace(/\\/g, '/')}`;
+      assert.equal(checkIsMain(currentFilePath, metaUrl), true);
+    });
+
+    test('returns false when argvPath and metaUrl point to different files', () => {
+      const currentFilePath = path.resolve('app.js');
+      const otherFilePath = path.resolve('subtitles.js');
+      const metaUrl = `file:///${otherFilePath.replace(/\\/g, '/')}`;
+      assert.equal(checkIsMain(currentFilePath, metaUrl), false);
+    });
+
+    test('handles non-existent paths gracefully without throwing', () => {
+      const nonExistentArgv = path.resolve('does_not_exist_abc123.js');
+      const metaUrl = 'file:///C:/does_not_exist_xyz789.js';
+      assert.equal(checkIsMain(nonExistentArgv, metaUrl), false);
     });
   });
 });
