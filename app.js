@@ -45,7 +45,10 @@ const SUPPORTED_ENCODINGS = new Set([
 ]);
 
 export async function getFiles () {
-  return deps.glob('*.{txt,srt}', { nocase: true, nodir: true });
+  const files = await deps.glob('*.{txt,srt}', { nocase: true, nodir: true });
+  return files.sort((a, b) => {
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }) || a.localeCompare(b);
+  });
 }
 
 export async function promptUser (files) {

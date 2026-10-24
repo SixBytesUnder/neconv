@@ -43,7 +43,7 @@ describe('neconv application', () => {
   });
 
   describe('getFiles', () => {
-    test('calls glob to find .txt and .srt files', async () => {
+    test('calls glob to find .txt and .srt files and returns them sorted', async () => {
       const mockFiles = ['sub1.srt', 'notes.txt'];
       const globMock = mock.method(deps, 'glob', async () => {
         return mockFiles;
@@ -56,7 +56,32 @@ describe('neconv application', () => {
         '*.{txt,srt}',
         { nocase: true, nodir: true }
       ]);
-      assert.deepEqual(files, mockFiles);
+      assert.deepEqual(files, ['notes.txt', 'sub1.srt']);
+    });
+
+    test('sorts files in alphabetical order from first to last letter', async () => {
+      const mockFiles = [
+        'zebra.srt',
+        'gamma.txt',
+        'Beta.srt',
+        'alpha.txt',
+        'ep10.srt',
+        'ep2.srt'
+      ];
+      mock.method(deps, 'glob', async () => {
+        return mockFiles;
+      });
+
+      const files = await getFiles();
+
+      assert.deepEqual(files, [
+        'alpha.txt',
+        'Beta.srt',
+        'ep2.srt',
+        'ep10.srt',
+        'gamma.txt',
+        'zebra.srt'
+      ]);
     });
 
     test('propagates glob errors', async () => {
