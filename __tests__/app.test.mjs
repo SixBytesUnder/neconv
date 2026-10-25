@@ -587,6 +587,9 @@ describe('neconv application', () => {
       mock.method(deps, 'repairBrokenLinesWithBielik', async () => {
         return 'pańskiego';
       });
+      const unloadModelMock = mock.method(deps, 'unloadModel', async () => {
+        return true;
+      });
       const stopServerMock = mock.method(deps, 'stopServer', async () => {
         return true;
       });
@@ -596,8 +599,51 @@ describe('neconv application', () => {
       assert.equal(isRunningMock.mock.callCount(), 1);
       assert.equal(startServerMock.mock.callCount(), 1);
       assert.equal(loadModelMock.mock.callCount(), 1);
+      assert.equal(unloadModelMock.mock.callCount(), 1);
       assert.equal(stopServerMock.mock.callCount(), 1);
-      assert.equal(mockSpinner.succeed.mock.callCount(), 2);
+      assert.equal(mockSpinner.succeed.mock.callCount(), 3);
+    });
+
+    test('handles LM Studio model unload failure in finally block gracefully', async () => {
+      mock.method(deps, 'glob', async () => {
+        return ['broken.srt'];
+      });
+      mock.method(deps.inquirer, 'prompt', async () => {
+        return { files: ['broken.srt'] };
+      });
+      mock.method(deps, 'readFile', async () => {
+        return Buffer.from('pa\uFFFDskiego');
+      });
+      mock.method(deps, 'writeFile', async () => {
+        return Promise.resolve();
+      });
+      mock.method(deps, 'rename', async () => {
+        return Promise.resolve();
+      });
+
+      mock.method(deps, 'isServerRunning', async () => {
+        return true;
+      });
+      mock.method(deps, 'loadBielikModel', async () => {
+        return true;
+      });
+      mock.method(deps, 'repairBrokenLinesWithBielik', async () => {
+        return 'pańskiego';
+      });
+      mock.method(deps, 'unloadModel', async () => {
+        throw new Error('Unload failed');
+      });
+      const stopServerMock = mock.method(deps, 'stopServer', async () => {
+        return true;
+      });
+
+      await run();
+
+      assert.equal(mockSpinner.fail.mock.callCount(), 1);
+      assert.ok(
+        mockSpinner.fail.mock.calls[0].arguments[0].includes('Failed to unload Bielik model')
+      );
+      assert.equal(stopServerMock.mock.callCount(), 1);
     });
 
     test('handles LM Studio shutdown failure in finally block gracefully', async () => {
@@ -625,6 +671,9 @@ describe('neconv application', () => {
       });
       mock.method(deps, 'repairBrokenLinesWithBielik', async () => {
         return 'pańskiego';
+      });
+      mock.method(deps, 'unloadModel', async () => {
+        return true;
       });
       mock.method(deps, 'stopServer', async () => {
         throw new Error('Process kill failed');

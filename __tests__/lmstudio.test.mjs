@@ -6,6 +6,8 @@ import {
   stopServer,
   isModelLoaded,
   loadBielikModel,
+  unloadModel,
+  unloadBielikModel,
   repairBrokenLinesWithBielik,
   deps
 } from '../lmstudio.js';
@@ -182,7 +184,7 @@ describe('lmstudio utilities', () => {
       assert.equal(loaded, true);
     });
 
-    test('returns true when model contains partial identifier', async () => {
+    test('returns false when model only contains partial identifier but not exact match', async () => {
       mock.method(globalThis, 'fetch', async () => {
         return {
           ok: true,
@@ -195,7 +197,7 @@ describe('lmstudio utilities', () => {
       });
 
       const loaded = await isModelLoaded('bielik', 'http://mock:1234');
-      assert.equal(loaded, true);
+      assert.equal(loaded, false);
     });
 
     test('returns false when model list does not match identifier', async () => {
@@ -262,7 +264,7 @@ describe('lmstudio utilities', () => {
           ok: true,
           json: async () => {
             return {
-              data: [{ id: 'bielik-11b-v3.0-instruct' }]
+              data: [{ id: 'bielik' }]
             };
           }
         };
@@ -271,6 +273,30 @@ describe('lmstudio utilities', () => {
       const result = await loadBielikModel();
       assert.equal(result, true);
       assert.equal(execMock.mock.callCount(), 0);
+    });
+
+    test('calls deps.exec when model is only on disk and not loaded as identifier', async () => {
+      const execMock = mock.method(deps, 'exec', async () => {
+        return { stdout: '', stderr: '' };
+      });
+      mock.method(globalThis, 'fetch', async () => {
+        return {
+          ok: true,
+          json: async () => {
+            return {
+              data: [{ id: 'bielik-11b-v3.0-instruct' }]
+            };
+          }
+        };
+      });
+
+      const result = await loadBielikModel();
+      assert.equal(result, true);
+      assert.equal(execMock.mock.callCount(), 1);
+      assert.equal(
+        execMock.mock.calls[0].arguments[0],
+        'lms load bielik-11b-v3.0-instruct -y --identifier bielik'
+      );
     });
 
     test('calls deps.exec when model is not currently loaded', async () => {
@@ -293,6 +319,34 @@ describe('lmstudio utilities', () => {
         execMock.mock.calls[0].arguments[0],
         'lms load bielik-custom -y --identifier my-bielik'
       );
+    });
+  });
+
+  describe('unloadModel', () => {
+    test('calls deps.exec with lms unload <identifier>', async () => {
+      const execMock = mock.method(deps, 'exec', async () => {
+        return { stdout: '', stderr: '' };
+      });
+
+      const result = await unloadModel('custom-model');
+      assert.equal(result, true);
+      assert.equal(execMock.mock.callCount(), 1);
+      assert.equal(execMock.mock.calls[0].arguments[0], 'lms unload custom-model');
+    });
+
+    test('uses default identifier bielik when omitted', async () => {
+      const execMock = mock.method(deps, 'exec', async () => {
+        return { stdout: '', stderr: '' };
+      });
+
+      const result = await unloadModel();
+      assert.equal(result, true);
+      assert.equal(execMock.mock.callCount(), 1);
+      assert.equal(execMock.mock.calls[0].arguments[0], 'lms unload bielik');
+    });
+
+    test('unloadBielikModel is an alias for unloadModel', async () => {
+      assert.equal(unloadBielikModel, unloadModel);
     });
   });
 

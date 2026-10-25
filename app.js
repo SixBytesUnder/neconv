@@ -13,7 +13,9 @@ import {
   isServerRunning,
   startServer,
   stopServer,
+  isModelLoaded,
   loadBielikModel,
+  unloadModel,
   repairBrokenLinesWithBielik
 } from './lmstudio.js';
 import { convertToSrt } from './subtitles.js';
@@ -29,7 +31,9 @@ export const deps = {
   isServerRunning,
   startServer,
   stopServer,
+  isModelLoaded,
   loadBielikModel,
+  unloadModel,
   repairBrokenLinesWithBielik,
   convertToSrt
 };
@@ -229,6 +233,14 @@ export async function run () {
     }
   } finally {
     if (lmStudioUsed) {
+      const unloadSpinner = deps.ora('Unloading Bielik model...').start();
+      try {
+        await deps.unloadModel();
+        unloadSpinner.succeed('Bielik model unloaded.');
+      } catch (err) {
+        unloadSpinner.fail(`Failed to unload Bielik model: ${err.message}`);
+      }
+
       const shutdownSpinner = deps.ora('Shutting down LM Studio server...').start();
       try {
         await deps.stopServer();

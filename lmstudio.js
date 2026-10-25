@@ -57,21 +57,28 @@ export async function isModelLoaded (identifier = DEFAULT_IDENTIFIER, baseUrl = 
       return false;
     }
     const json = await res.json();
-    return json.data && json.data.some((m) => {
-      return m.id === identifier || m.id.includes(identifier);
-    });
+    return Boolean(json.data && json.data.some((m) => {
+      return m.id === identifier;
+    }));
   } catch {
     return false;
   }
 }
 
-export async function loadBielikModel (modelKey = DEFAULT_MODEL_KEY, identifier = DEFAULT_IDENTIFIER) {
-  if (await isModelLoaded(identifier)) {
+export async function loadBielikModel (modelKey = DEFAULT_MODEL_KEY, identifier = DEFAULT_IDENTIFIER, baseUrl = LM_STUDIO_URL) {
+  if (await isModelLoaded(identifier, baseUrl)) {
     return true;
   }
   await deps.exec(`lms load ${modelKey} -y --identifier ${identifier}`);
   return true;
 }
+
+export async function unloadModel (identifier = DEFAULT_IDENTIFIER) {
+  await deps.exec(`lms unload ${identifier}`);
+  return true;
+}
+
+export const unloadBielikModel = unloadModel;
 
 export async function repairBrokenLinesWithBielik (text, baseUrl = LM_STUDIO_URL, onProgress = null) {
   const lines = text.split(/\r?\n/);
